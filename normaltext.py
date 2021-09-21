@@ -1,3 +1,5 @@
 import os
 class Config:
-    Welcome = "welcome"
+    Welcome = '''kya kr rha b ...
+    vhaa kb jayega 
+    kya krega jakr'''
