@@ -11,7 +11,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from random import sample
 from config import Config
-
+from normaltext import Welcome
 
 TOKEN = Config.BOT_TOKEN
 bot = telebot.TeleBot(token=TOKEN)
