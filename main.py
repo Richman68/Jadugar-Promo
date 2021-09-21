@@ -18,7 +18,6 @@ from config import Config
 
 
 TOKEN = Config.BOT_TOKEN
-#TOKEN = "1902307802:AAG0D1WZSDVCzWWsMzwSAXJq_1-O9MDsNA4"
 bot = telebot.TeleBot(token=TOKEN)
 server = Flask(__name__)
 
@@ -27,7 +26,7 @@ server = Flask(__name__)
 scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name("credential.json", scope)
 client = gspread.authorize(creds)
-ak = client.open("pdiskv2")
+ak = client.open(Config.sheetname)
 sheet1 = ak.worksheet(Config.SHEETA)
  
 user_dict = {}
