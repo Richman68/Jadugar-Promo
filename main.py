@@ -33,7 +33,7 @@ class User:
  
 @bot.message_handler(commands=['start'])
 def test(m):
-  bot.send_message(m.chat.id,text="akhill")
+  bot.send_message(m.chat.id,text=Welcome.welcome)
   
 @server.route('/' + TOKEN, methods=['POST'])
 def getMessage():
