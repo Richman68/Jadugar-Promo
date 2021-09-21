@@ -1,18 +1,14 @@
 import os
 import requests
 from flask import Flask, request
-import re
 import time
 import telebot
-from PIL import Image, ImageDraw, ImageFont
-from io import BytesIO
 import time
 import random, string
 import telebot
 from telebot import types
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import random
 from random import sample
 from config import Config
 
