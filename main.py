@@ -27,7 +27,7 @@ scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/aut
 creds = ServiceAccountCredentials.from_json_keyfile_name("credential.json", scope)
 client = gspread.authorize(creds)
 ak = client.open(Config.sheetname)
-sheet1 = ak.worksheet(Config.SHEETA)
+sheet1 = ak.worksheet(Config.sheetA)
  
 user_dict = {}
 class User:
