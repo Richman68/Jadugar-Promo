@@ -126,7 +126,7 @@ def channeladd1(m):
       sheet2.update(cellidy,chnlid)
       try:
         a=bot.send_message(chat_id=chnlid,text="This is test message",parse_mode="HTML")
-        msgid = a.id
+        msgid = a.message_id
         bot.delete_message(chnlid,msgid)
         qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
         bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
