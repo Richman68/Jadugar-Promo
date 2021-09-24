@@ -5,5 +5,4 @@ class Config:
     sheetA = "channels"
     sheetB = "users"
     app = "promotionv4"
-    chnlid = "1551862526"
-    CHANNEL_ID="-100" + chnlid
+    admins = [608824855]
