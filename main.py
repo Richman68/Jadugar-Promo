@@ -58,13 +58,13 @@ def wlcm(m):
     sheet2.update_cell(int(h1),2 ,id)
     sheet2.update_cell(int(h1),3 ,"0")
   usrlnk = f"<a href='tg://user?id={m.chat.id}'>{m.from_user.first_name}</a>"
-  bot.send_message(m.chat.id,text=normaltext.welcome.format(usrlnk),reply_markup = buttons.Wlcmbtn.key)
+  bot.send_message(m.chat.id,text=normaltext.welcome.format(usrlnk),reply_markup = buttons.Wlcmbtn.key,parse_mode="HTML")
 
 @bot.message_handler(commands=['admin'])
 def admincmd(m):
   Id = m.chat.id
   if int(Id) in Config.admins:
-    bot.send_message(m.chat.id,text=normaltext.adminpnl)#,reply_markup=key)
+    bot.send_message(m.chat.id,text=normaltext.adminpnl,parse_mode="HTML")#,reply_markup=key)
   else:
     bot.delete_message(m.chat.id,m.message_id)
     ak = bot.send_message(m.chat.id,text=normaltext.nonadminpnl,parse_mode="HTML")
@@ -74,14 +74,14 @@ def admincmd(m):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
   if call.data == "hlp":
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"{normaltext.HelpText}",message_id=call.message.id,reply_markup=buttons.HlpBtn.key)
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"{normaltext.HelpText}",message_id=call.message.id,reply_markup=buttons.HlpBtn.key,parse_mode="HTML")
   if call.data == "backtohome":
     usrlnk = f"<a href='tg://user?id={call.message.chat.id}'>{call.from_user.first_name}</a>"
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.welcome.format(usrlnk)}</b>",message_id=call.message.id,reply_markup=buttons.Wlcmbtn.key)
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.welcome.format(usrlnk)}</b>",message_id=call.message.id,reply_markup=buttons.Wlcmbtn.key,parse_mode="HTML")
   if call.data == "strtDevEdt":
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.dvlprText.format(normaltext.botUsername,call.message.from_user.first_name)}</b>",message_id=call.message.id,reply_markup=buttons.DevBtn.key)
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.dvlprText.format(normaltext.botUsername,call.message.from_user.first_name)}</b>",message_id=call.message.id,reply_markup=buttons.DevBtn.key,parse_mode="HTML")
   if call.data == "chnladd":
-    ak = bot.send_message(chat_id = call.message.chat.id,text=normaltext.ReisterStepA,reply_markup=buttons.CancelKey.keyboard)
+    ak = bot.send_message(chat_id = call.message.chat.id,text=normaltext.ReisterStepA,reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
     bot.delete_message(chat_id=call.message.chat.id,message_id=call.message.id)
     bot.register_next_step_handler(ak, channeladd1)
   if call.data == "mychnl":
@@ -105,16 +105,16 @@ def callback_inline(call):
         keyboard.add(callback_btn1,callback_btn2)
       keyboard.add(buttons.btnhome)
       mid = call.message.message_id
-      bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.id,reply_markup = keyboard)
+      bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.id,reply_markup = keyboard),parse_mode="HTML"
     except Exception as e:
       print(e)
-      bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.id,reply_markup = buttons.Ntanychnl.key)
+      bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
 
 def channeladd1(m):
   if f"{m.text}" in cancellist:
-    qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key)
+    qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
     bot.delete_message(chat_id=m.chat.id,message_id=qk.id)
-    bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key)
+    bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
   else:
     try:
       Ttype = m.forward_from_chat.type
@@ -125,14 +125,14 @@ def channeladd1(m):
       cellidy = "D" + f"{cellurowy}"
       sheet2.update(cellidy,chnlid)
       try:
-        a=bot.send_message(chat_id=chnlid,text="This is test message")
+        a=bot.send_message(chat_id=chnlid,text="This is test message",parse_mode="HTML")
         msgid = a.id
         bot.delete_message(chnlid,msgid)
-        qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key)
+        qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
         bot.delete_message(chat_id=m.chat.id,message_id=qk.id)
         cellsp = sheet1.findall(f"{chnlid}")
         if len(cellsp) > 0:
-          bot.send_message(m.chat.id,text =normaltext.ChnlAlrdyInDTbse,reply_markup=buttons.Ntanychnl.key)
+          bot.send_message(m.chat.id,text =normaltext.ChnlAlrdyInDTbse,reply_markup=buttons.Ntanychnl.key,parse_mode="HTML")
         else:
           subcount= bot.get_chat_members_count(chat_id=chnlid)
           Min = normaltext.MaxLimitUser
@@ -163,15 +163,15 @@ def channeladd1(m):
             sheet1.update_cell(int(j1),5 ,"")
             sheet1.update_cell(int(j1),6 ,f"{subcount}")
             sheet1.update_cell(int(j1),7 ,f"{adminid}")
-            m = bot.send_message(m.chat.id,text = "<b>Send private link of your channel</b>",reply_markup=buttons.CancelKey.keyboard)
+            m = bot.send_message(m.chat.id,text = "<b>Send private link of your channel</b>",reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
             bot.register_next_step_handler(m,addlink)
           else:
-            ak = bot.send_message(m.chat.id,text=normaltext.NotEnfSub.format(subcount),reply_markup=buttons.Ntanychnl.key)
+            ak = bot.send_message(m.chat.id,text=normaltext.NotEnfSub.format(subcount),reply_markup=buttons.Ntanychnl.key,parse_mode="HTML")
       except:
-        ak = bot.send_message(m.chat.id,text="<b>Error:</b> <code>Please authrise me with the rights of Post & Delete and Forward The Post Again. Please Try Again</code>")
+        ak = bot.send_message(m.chat.id,text="<b>Error:</b> <code>Please authrise me with the rights of Post & Delete and Forward The Post Again. Please Try Again</code>",parse_mode="HTML")
         bot.register_next_step_handler(ak, channeladd1)
     except:
-      ak = bot.send_message(m.chat.id,text="<b>This message is not forwarded from channel. Please Try Again</b>")
+      ak = bot.send_message(m.chat.id,text="<b>This message is not forwarded from channel. Please Try Again</b>",parse_mode="HTML")
       bot.register_next_step_handler(ak, channeladd1)
 
 def addlink(m):
@@ -192,9 +192,9 @@ def addlink(m):
     for cell in cell_list:
       cell.value = ''
       sheetyyy.update_cells(cell_list)
-    qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key)
+    qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
     bot.delete_message(chat_id=m.chat.id,message_id=qk.id)
-    bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key)
+    bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
     cell_list1 = sheet1.range(f"A{cellurowcc}:H{cellurowcc}")
     for cell in cell_list1:
       cell.value = ''
@@ -206,9 +206,9 @@ def addlink(m):
       chnlnamex = "C" + f"{cellurowcc}"
       chnlname1 = sheet1.get(chnlnamex).first()
       sheet1.update(cellidc,lnk)
-      bot.send_message(m.chat.id,text=normaltext.ChnlAdSucess.format(lnk,chnlname1),disable_web_page_preview=True,reply_markup=buttons.Sucessaddchnl.key)
+      bot.send_message(m.chat.id,text=normaltext.ChnlAdSucess.format(lnk,chnlname1),disable_web_page_preview=True,reply_markup=buttons.Sucessaddchnl.key,parse_mode="HTML")
     else:
-      ak = bot.send_message(m.chat.id,text="<b>channel link is not valid,Please Send Me Link Again</b>")
+      ak = bot.send_message(m.chat.id,text="<b>channel link is not valid,Please Send Me Link Again</b>",parse_mode="HTML")
       bot.register_next_step_handler(ak, addlink)
   ak = client.open(Config.sheetname)
   sheetyyy1 = ak.worksheet(f"{admnid}")
