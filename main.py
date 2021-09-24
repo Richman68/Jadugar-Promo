@@ -108,7 +108,7 @@ def callback_inline(call):
       bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.id,reply_markup = keyboard,parse_mode="HTML")
     except Exception as e:
       print(e)
-      bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
+      bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
 
 def channeladd1(m):
   if f"{m.text}" in cancellist:
