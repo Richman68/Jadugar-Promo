@@ -14,7 +14,7 @@ import normaltext
 import buttons
 
 TOKEN = Config.BOT_TOKEN
-bot = telebot.TeleBot(token=TOKEN,parse_mode="HTML")
+bot = telebot.TeleBot(token=TOKEN)#,parse_mode="HTML")
 server = Flask(__name__)
 
 scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
