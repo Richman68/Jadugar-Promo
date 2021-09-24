@@ -105,7 +105,7 @@ def callback_inline(call):
         keyboard.add(callback_btn1,callback_btn2)
       keyboard.add(buttons.btnhome)
       mid = call.message.message_id
-      bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.id,reply_markup = keyboard),parse_mode="HTML"
+      bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.id,reply_markup = keyboard,parse_mode="HTML")
     except Exception as e:
       print(e)
       bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
