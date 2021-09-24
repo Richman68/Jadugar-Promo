@@ -113,7 +113,7 @@ def callback_inline(call):
 def channeladd1(m):
   if f"{m.text}" in cancellist:
     qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
-    bot.delete_message(chat_id=m.chat.id,message_id=qk.id)
+    bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
     bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
   else:
     try:
@@ -129,7 +129,7 @@ def channeladd1(m):
         msgid = a.id
         bot.delete_message(chnlid,msgid)
         qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
-        bot.delete_message(chat_id=m.chat.id,message_id=qk.id)
+        bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
         cellsp = sheet1.findall(f"{chnlid}")
         if len(cellsp) > 0:
           bot.send_message(m.chat.id,text =normaltext.ChnlAlrdyInDTbse,reply_markup=buttons.Ntanychnl.key,parse_mode="HTML")
@@ -193,7 +193,7 @@ def addlink(m):
       cell.value = ''
       sheetyyy.update_cells(cell_list)
     qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
-    bot.delete_message(chat_id=m.chat.id,message_id=qk.id)
+    bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
     bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
     cell_list1 = sheet1.range(f"A{cellurowcc}:H{cellurowcc}")
     for cell in cell_list1:
