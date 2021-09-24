@@ -74,7 +74,8 @@ def admincmd(m):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
   if call.data == "hlp":
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"{normaltext.HelpText}",message_id=call.message.id,reply_markup=buttons.HlpBtn.key,parse_mode="HTML")
+    bot.send_message(call.messg)
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"{normaltext.HelpText}",message_id=call.message.message_id,reply_markup=buttons.HlpBtn.key,parse_mode="HTML")
   if call.data == "backtohome":
     usrlnk = f"<a href='tg://user?id={call.message.chat.id}'>{call.from_user.first_name}</a>"
     bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.welcome.format(usrlnk)}</b>",message_id=call.message.id,reply_markup=buttons.Wlcmbtn.key,parse_mode="HTML")
