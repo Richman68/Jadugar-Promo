@@ -77,12 +77,12 @@ def callback_inline(call):
     bot.edit_message_text(chat_id = call.message.chat.id,text=f"{normaltext.HelpText}",message_id=call.message.message_id,reply_markup=buttons.HlpBtn.key,parse_mode="HTML")
   if call.data == "backtohome":
     usrlnk = f"<a href='tg://user?id={call.message.chat.id}'>{call.from_user.first_name}</a>"
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.welcome.format(usrlnk)}</b>",message_id=call.message.id,reply_markup=buttons.Wlcmbtn.key,parse_mode="HTML")
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.welcome.format(usrlnk)}</b>",message_id=call.message.message_id,reply_markup=buttons.Wlcmbtn.key,parse_mode="HTML")
   if call.data == "strtDevEdt":
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.dvlprText.format(normaltext.botUsername,call.message.from_user.first_name)}</b>",message_id=call.message.id,reply_markup=buttons.DevBtn.key,parse_mode="HTML")
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.dvlprText.format(normaltext.botUsername,call.message.from_user.first_name)}</b>",message_id=call.message.message_id,reply_markup=buttons.DevBtn.key,parse_mode="HTML")
   if call.data == "chnladd":
     ak = bot.send_message(chat_id = call.message.chat.id,text=normaltext.ReisterStepA,reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
-    bot.delete_message(chat_id=call.message.chat.id,message_id=call.message.id)
+    bot.delete_message(chat_id=call.message.chat.id,message_id=call.message.message_id)
     bot.register_next_step_handler(ak, channeladd1)
   if call.data == "mychnl":
     try:
@@ -105,7 +105,7 @@ def callback_inline(call):
         keyboard.add(callback_btn1,callback_btn2)
       keyboard.add(buttons.btnhome)
       mid = call.message.message_id
-      bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.id,reply_markup = keyboard,parse_mode="HTML")
+      bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.message_id,reply_markup = keyboard,parse_mode="HTML")
     except Exception as e:
       print(e)
       bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
