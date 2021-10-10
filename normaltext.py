@@ -26,15 +26,20 @@ This Is A Promotion Bot. If u Need any Type of Help about promoting of Your Chan
 🚫 Those who break the rules will be banned from the bot.</b>'''
 
 dvlprText = '''<b>About Me 😎
+<b>----------------------------------------------------</b>
 🤖 Name :''' + "<a href='t.me/{}'>{}</a>" + '''
 👨‍💻 Developer : @Jai_Mahakal_Ji
-📝 Language : </b><code>Python3.8</code>
+📝 Language : </b><code>Python 3. 9.7</code>
+<b>📲 Version :</b> <code>1.0.2</code>
 <b>🧰 Framework :</b> <code>PyTelegramBotAPI</code>
 <b>📡 Server :</b> <code>Heroku</code>
-<b>Made In India 🇮🇳 ❤️</b>'''
+<b>----------------------------------------------------</b>
+<b>Made With ❤️ In India 🇮🇳 </b>'''
 
 note = "⚠️ Note:- Your default channel description is your channel name. If u want to update it then use comamnd"
 ChnlAdSucess = f"<b>✅ Your channel</b> "+ '<a href="{}">{} </a>' + f"<b>is added successfully. </b> \n\n<code>{note}</code> /update_Chnl_Data ."
+
+updateChnlData = "<b>☹️ Its Not For u</b>"
 
 ReisterStepA = '''<b>Now follow the following steps</b>
 
@@ -46,3 +51,34 @@ NotanyChnl = '''<b>⚠️ You haven't registered any channel with our bot yet Or
 NotEnfSub = "<b>Error:</b> <code>Your Channel Have not Minimum Required Subscribers. Should Have minimum" + f" {MaxLimitUser} " + "Subscribers But Your channel have only {} subscribers.</code>"
 
 ChnlAlrdyInDTbse =  "<b>Channel is already in database Contact " + AdminUsername + " to any queries.</b>"
+
+usrststext = '''<b>Bot Users Statics 📊
+➖➖➖➖➖➖➖➖➖➖➖➖➖
+Total Users:</b> <code>{}</code>
+<b>Active Users:</b> <code>{}</code>
+<b>InActive Users:</b> <code>{}</code>'''
+
+Chanlsststext = '''<b>Bot Channesl Statics 📊
+➖➖➖➖➖➖➖➖➖➖➖➖➖
+Total Channels:</b> <code>{}</code>
+<b>Active Channels:</b> <code>{}</code>
+<b>InActive Channels:</b> <code>{}</code>'''
+
+setlistType = "<b>✅ Choose the list Type</b>"
+
+listtypesetalert = "List Type Changed Successfully"
+
+SetBtnText = '''<b>Send me The Buttons those you want to add below the list. Format is given below
+Example:</b>
+  <code>Channel1 😋 = https://t.me/Link1
+  Channel2 💐 = https://t.me/Link2
+  Channel3 ☺️ = https://t.me/Link3
+  Channel4 😍 = https://t.me/Link4</code>'''
+
+ListForwardSucess = '''<b>List Forward Status:
+Successful :</b> {}
+<b>Failed :</b> {}'''
+
+ListdeleteSucess = '''<b>List Delete Status:
+Successful :</b> {}
+<b>Failed :</b> {}'''
