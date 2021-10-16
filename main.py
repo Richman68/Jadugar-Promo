@@ -7,16 +7,20 @@ import ast
 import random, string
 import telebot
 from telebot import types
+from telebot import util
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from random import sample
 from config import Config
 import normaltext
 import buttons
+import demoji
+import emojis
 
 TOKEN = Config.BOT_TOKEN
 bot = telebot.TeleBot(token=TOKEN)#,parse_mode="HTML")
 server = Flask(__name__)
+
 
 scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name("credential.json", scope)
@@ -39,7 +43,7 @@ def query_text(query):
   if f"{ak}" == "":
     try:
       print(ak)
-      r = types.InlineQueryResultArticle('1', 'Click Here tho Share', types.InputTextMessageContent(normaltext.sharetext,parse_mode="HTML"))
+      r = types.InlineQueryResultArticle('1', 'Click Here tho Share', types.InputTextMessageContent(normaltext.sharetext.format(Config.botUsername),parse_mode="HTML"))
       bot.answer_inline_query(query.id, [r])
     except Exception as e:
       print(e)
@@ -90,7 +94,7 @@ def callback_inline(call):
     usrlnk = f"<a href='tg://user?id={call.message.chat.id}'>{call.from_user.first_name}</a>"
     bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.welcome.format(usrlnk)}</b>",message_id=call.message.message_id,reply_markup=buttons.Wlcmbtn.key,parse_mode="HTML")
   if call.data == "strtDevEdt":
-    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.dvlprText.format(normaltext.botUsername,call.message.from_user.first_name)}</b>",message_id=call.message.message_id,reply_markup=buttons.DevBtn.key,parse_mode="HTML")
+    bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>{normaltext.dvlprText.format(Config.botUsername,call.message.from_user.first_name)}</b>",message_id=call.message.message_id,reply_markup=buttons.DevBtn.key,parse_mode="HTML")
   if call.data == "chnladd":
     ak = bot.send_message(chat_id = call.message.chat.id,text=normaltext.ReisterStepA,reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
     bot.delete_message(chat_id=call.message.chat.id,message_id=call.message.message_id)
@@ -100,6 +104,15 @@ def callback_inline(call):
       userid = call.message.chat.id
       ak = client.open(Config.sheetname)
       sheetyyy = ak.worksheet(f"{userid}")
+      sheetyyy.sort((2, 'des'),range='A1:E10')
+      values_list5 = sheetyyy.col_values(2)
+      while("" in values_list5):
+        values_list5.remove("")
+      total_count = len(values_list5)
+      #print(total_count)
+      for i in range(1,total_count+1):
+        sheetyyy.update(f"A{i}",i)
+        sheetyyy.update(f"E{i}",f"akh{i}")
       ttlvhnl = sheetyyy.get('A11').first()
       if int(ttlvhnl) >=1:
         mid = call.message.message_id
@@ -131,16 +144,10 @@ def callback_inline(call):
     cells = sheetyyy.find(valueFromCallBack)
     print(cells)
     rowx = cells.row
-    cell_list = sheetyyy.range(f"A{rowx}:E{rowx}")
-    for cell in cell_list:
-      cell.value = ''
-      sheetyyy.update_cells(cell_list)
+    sheetyyy.batch_clear([f"A{rowx}:E{rowx}"])
     cnlcell = sheet1.find(valueFromCallBack)
     row1 = cnlcell.row
-    cell_list2 = sheet1.range(f"A{row1}:K{row1}")
-    for cell2 in cell_list2:
-      cell2.value = ''
-      sheet1.update_cells(cell_list2)
+    sheet1.batch_clear([f"A{row1}:K{row1}"])
     h = sheetyyy.get('A11').first()
     if int(h) == 0:
       bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
@@ -303,11 +310,24 @@ def callback_inline(call):
   if call.data=="updtcptn":
     ak = bot.send_message(call.message.chat.id,text="Send me Caption In HTML Format")
     bot.register_next_step_handler(ak,updtcptn)
+  if call.data=="updsubscdtn":
+    ak = bot.send_message(call.message.chat.id,text="Send me Number of subscibers Required")
+    bot.register_next_step_handler(ak,updtreqsub)
+  if call.data=="mnmreqsubs":
+    hdrspcr = sheet3.get('B13').first()
+    if f"{hdrspcr}" == "None":
+      ak = bot.send_message(call.message.chat.id,text="Send me Minimum Required Subscribe In chNnel in numbers")
+      bot.register_next_step_handler(ak,updtreqsub)
+    else:
+      keyboard = types.InlineKeyboardMarkup()
+      keyboard.add(types.InlineKeyboardButton(text="🔄 Update  Minimum Subscribers ", callback_data="updsubscdtn"))
+      keyboard.add(types.InlineKeyboardButton(text="❌ Close",callback_data = "clsewndw"))
+      bot.send_message(call.message.chat.id,text=f"<b>Here is Minimum Sub to add channel</b>\n\n{hdrspcr}",parse_mode="HTML",reply_markup=keyboard)
   if call.data=="chnlinalist":
     hdrspcr = sheet3.get('B10').first()
     if f"{hdrspcr}" == "None":
       ak = bot.send_message(call.message.chat.id,text="Send me No.of Channel in A list.")
-      bot.register_next_step_handler(ak,updtcptn)
+      bot.register_next_step_handler(ak,updtchnlinalist)
     else:
       keyboard = types.InlineKeyboardMarkup()
       keyboard.add(types.InlineKeyboardButton(text="🔄 Update Channnels Number ", callback_data="updatechnlinalist"))
@@ -317,27 +337,36 @@ def callback_inline(call):
     ak = bot.send_message(call.message.chat.id,text="Send me No. of Channel you want in one list")
     bot.register_next_step_handler(ak,updtchnlinalist)
   if call.data=="picy":
-    sheet3.update("B11","Yes")
+    #sheet3.update("B11","Yes")
+    sheet3.update_cell(11, 2, 'Yes')
     userid = call.message.chat.id
     mid = call.message.message_id
     bot.edit_message_reply_markup(userid,mid,reply_markup = buttons.SponcerpicN.key)
+    bot.answer_callback_query(callback_query_id=call.id, show_alert=True , text="Pic Will Be Added")
   if call.data=="picn":
-    sheet3.update("B11","No")
+    #sheet3.update("B11","No")
+    sheet3.update_cell(11, 2, 'No')
     userid = call.message.chat.id
     mid = call.message.message_id
     bot.edit_message_reply_markup(userid,mid,reply_markup = buttons.SponcerpicY.key)
+    bot.answer_callback_query(callback_query_id=call.id, show_alert=True , text="Pic Removed")
   if call.data=="setpic":
-    hdrspcr = sheet3.get('B8').first()
-    if f"{hdrspcr}" == "None":
-      ak = bot.send_message(call.message.chat.id,text="Send me Sponcer pic")
-      bot.register_next_step_handler(ak,updtpic)
-    else:
+    #hdrspcr = sheet3.cell(int(8),int(2)).value
+    try:
+      hdrspcr = sheet3.get('B8').first()
       spncrpicst = sheet3.get('B11').first()
       keyboard = types.InlineKeyboardMarkup()
+      print(spncrpicst)
       if f"{spncrpicst}" == "Yes":
+        bot.send_photo(call.message.chat.id,photo =hdrspcr, caption=f"<b>Here is Sponcer Pic</b>",parse_mode="HTML",reply_markup=buttons.SponcerpicN.key)
+      elif f"{spncrpicst}" == "No":
         bot.send_photo(call.message.chat.id,photo =hdrspcr, caption=f"<b>Here is Sponcer Pic</b>",parse_mode="HTML",reply_markup=buttons.SponcerpicY.key)
       else:
-        bot.send_photo(call.message.chat.id,photo =hdrspcr, caption=f"<b>Here is Sponcer Pic</b>",parse_mode="HTML",reply_markup=buttons.SponcerpicN.key)
+        print("Error")
+    except:
+      print("bk")
+      ak = bot.send_message(call.message.chat.id,text="Invalid Format Found...Send me Sponcer pic")
+      bot.register_next_step_handler(ak,updtpic)
   if call.data=="updtpic":
     ak = bot.send_message(call.message.chat.id,text="Send me Sponcer pic")
     bot.register_next_step_handler(ak,updtpic)
@@ -353,7 +382,9 @@ def callback_inline(call):
     ListChnl = Config.ListChannel
     lisType = sheet3.get('B1').first()
     EntryInOneList = sheet3.get('B10').first()
-    sheet1.sort((2, 'des'))
+    #sheet1.sort((6, 'des'))
+    #sheet1.sort((6, 'asc'), range='A1:K999')
+    sheet1.sort((6, 'des'),range='A1:K999')
     values_list1 = sheet1.col_values(3)
     values_list2 = sheet1.col_values(4)
     values_list3 = sheet1.col_values(5)
@@ -367,11 +398,17 @@ def callback_inline(call):
         Uname = i2.strip()
         Link = i3.strip()
         if f"{Uname}" == "None":
-          if len(f"{Name}") >= 16:
-            Name1 = Name[0:16]
+          emojis_list_de= re.findall(r'(:[!_\-\w]+:)', Name)
+          list_emoji= [emoji.emojize(x) for x in emojis_list_de]
+          Name2 = demoji.replace(Name, "")
+          Name3 = Name2.replace(" ", "")
+          Name5 = Name3.lower()
+          #Name5 = "{}{}".format(list_emoji[0],Name4)
+          if len(f"{Name5}") >= 16:
+            Name1 = Name5[0:16]
             contxt+=f"\n{emoji} <a href='{Link}'>@{Name1}</a>"
           else:
-            contxt+=f"\n{emoji} <a href='{Link}'>@{Name}</a>"
+            contxt+=f"\n{emoji} <a href='{Link}'>@{Name5}</a>"
         else:
           contxt+=f"\n{emoji} {Uname}"
       fxdbtn = sheet3.get('B3').first()
@@ -461,15 +498,19 @@ def callback_inline(call):
           if int(q+1) == int(TotalList):
             if int(remainder*2) >= Linetosplit:
               for y in range(remainder):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
             else:
               for y in range(int(remainder+Linetosplit)):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
           else:
             for y in range(Linetosplit):
+              time.sleep(2)
               sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
         else:
           for y in range(Linetosplit):
+            time.sleep(2)
             sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
       bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
     if f"{lisType}" == "clskNlist":
@@ -481,11 +522,28 @@ def callback_inline(call):
         Name = i1.strip()
         Uname = i2.strip()
         Link = i3.strip()
-        if len(f"{Name}") >= 16:
-          Name1 = Name[0:16]
+        list_emoji = emojis.get(f'{Name}')
+        Name4 = demoji.replace(Name, "")
+        #Name4 = Name2.replace(" ", "")
+        #Name4 = Name3.lower()
+        Name5=""
+        try:
+          list_emoji1 = list(list_emoji)
+          Name5+= "{}{}".format(list_emoji1[0],Name4)
+        except:
+          list_emoji1 = list(Config.EmojiText)
+          print(list_emoji1)
+          wordcount = emojis.count(Config.EmojiText)
+          n = random.randint(1,int(wordcount-1))
+          try:
+            Name5+= "{}{}".format(list(list_emoji1)[n],Name4)
+          except:
+            Name5+= "🔥{}".format(Name4)
+        if len(f"{Name5}") >= 16:
+          Name1 = Name5[0:16]
           contxt+=f"\n{emoji} <a href='{Link}'>{Name1}</a>"
         else:
-          contxt+=f"\n{emoji} <a href='{Link}'>{Name}</a>"
+          contxt+=f"\n{emoji} <a href='{Link}'>{Name5}</a>"
       fxdbtn = sheet3.get('B3').first()
       if f"{fxdbtn}" == "Yes":
         fxdbtndata = sheet3.get('B2').first()
@@ -515,6 +573,7 @@ def callback_inline(call):
       lines = contxt.split("\n")
       non_empty_lines = [line for line in lines if line.strip() != ""]
       finallines = ""
+      #print(non_empty_lines)
       for line in non_empty_lines:
         finallines += line + "\n"
       spliallline = finallines.splitlines()
@@ -573,15 +632,19 @@ def callback_inline(call):
           if int(q+1) == int(TotalList):
             if int(remainder*2) >= Linetosplit:
               for y in range(remainder):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
             else:
               for y in range(int(remainder+Linetosplit)):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
           else:
             for y in range(Linetosplit):
+              time.sleep(2)
               sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
         else:
           for y in range(Linetosplit):
+            time.sleep(2)
             sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
       bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
     if f"{lisType}" == "Stndrdlist":
@@ -697,15 +760,19 @@ def callback_inline(call):
           if int(q+1) == int(TotalList):
             if int(remainder*2) >= Linetosplit:
               for y in range(remainder):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
             else:
               for y in range(int(remainder+Linetosplit)):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
           else:
             for y in range(Linetosplit):
+              time.sleep(2)
               sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
         else:
           for y in range(Linetosplit):
+            time.sleep(2)
             sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
       bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
     if f"{lisType}" == "Buttonlist":
@@ -717,11 +784,28 @@ def callback_inline(call):
         Name = i1.strip()
         Uname = i2.strip()
         Link = i3.strip()
-        if len(f"{Name}") >= 16:
-          Name1 = Name[0:16]
-          contxt+=f"\n{Name1} = {Link}"
+        list_emoji = emojis.get(f'{Name}')
+        Name4 = demoji.replace(Name, "")
+        #Name4 = Name2.replace(" ", "")
+        #Name4 = Name3.lower()
+        emoji2add=""
+        Name5=""
+        try:
+          list_emoji1 = list(list_emoji)
+          emoji2add+="{}".format(list_emoji1[0])
+          Name5+= "{}".format(Name4)
+        except:
+          list_emoji1 = list(Config.EmojiText)
+          wordcount = emojis.count(Config.EmojiText)
+          n = random.randint(1,int(wordcount))
+          print(list(list_emoji1))
+          emoji2add+="{}".format(list(list_emoji1)[n])
+          Name5+= "{}".format(Name4)
+        if len(f"{Name5}") >= 16:
+          Name1 = Name5[0:16]
+          contxt+=f"\n{emoji2add}{Name1}{emoji2add} = {Link}"
         else:
-          contxt+=f"\n{Name} = {Link}"
+          contxt+=f"\n{emoji2add}{Name5}{emoji2add} = {Link}"
       lines = contxt.split("\n")
       non_empty_lines = [line for line in lines if line.strip() != ""]
       finallines = ""
@@ -849,15 +933,19 @@ def callback_inline(call):
           if int(q+1) == int(TotalList):
             if int(remainder*2) >= Linetosplit:
               for y in range(remainder):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
             else:
               for y in range(int(remainder+Linetosplit)):
+                time.sleep(2)
                 sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
           else:
             for y in range(Linetosplit):
+              time.sleep(2)
               sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
         else:
           for y in range(Linetosplit):
+            time.sleep(2)
             sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
       bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
   if call.data=="setblwbtns":
@@ -949,19 +1037,24 @@ def callback_inline(call):
       if f"{stats}" == "Shared":
         try:
           mid = sheet1.get(f"J{row}").first()
-          if int(mid) >=1:
-            bot.delete_message(man_detail1,mid)
-            sheet1.update(f"I{row}","Deleted")
-            sheet1.update(f"J{row}","0")
-            Pass+=1
-          elif int(mid) == 0:
+          #if int(mid) >=1:
+          if int(mid) == 0:
             AlredyDelete+=f"\n{man_detail1}"
             bot.send_message(call.message.chat.id,f"{man_detail1} Already Deleted")
           else:
-            bot.send_message(call.message.chat.id,f"{man_detail1} Failed bcz list id {mid}")
+            try:
+              bot.delete_message(man_detail1,mid)
+              sheet1.update(f"I{row}","Deleted")
+              sheet1.update(f"J{row}","0")
+              Pass+=1
+              time.sleep(2)
+            except Exception as e:
+              time.sleep(2)
+              bot.send_message(call.message.chat.id,f"{man_detail1} Failed & list id {mid} and error is {e}")
         except Exception as e:
+          time.sleep(2)
           failedlist+=f"\n{man_detail1}"
-          bot.send_message(call.message.chat.id,f"{man_detail1} failed with error {e}")
+          bot.send_message(call.message.chat.id,f"{man_detail1} failed with error {e}\n")
         time.sleep(1)
       else:
         m = bot.send_message(call.message.chat.id,text=f"<b>Failed bcz previous Status is {stats}</b>",parse_mode="HTML")
@@ -987,16 +1080,19 @@ def callback_inline(call):
       if f"{stats}" == "Deleted" or "None":
         try:
           aa = bot.forward_message(chat_id = f"{man_detail1}", from_chat_id =Config.ListChannel, message_id = man_detail2)
-          sheet1.update(f"I{row}","shared")
+          sheet1.update(f"I{row}","Shared")
           sheet1.update(f"J{row}",f"{aa.message_id}")
           time.sleep(1)
           Pass+=1
+          time.sleep(2)
         except Exception as e:
           Fail+=1
+          time.sleep(2)
           failedlist+=f"\n{man_detail1}"
           bot.send_message(call.message.chat.id,text=f"{man_detail1} Failed with error {e}")
       else:
         failedlist+=f"\n{man_detail1}"
+        time.sleep(2)
         m = bot.send_message(call.message.chat.id,text=f"<b>Failed bcz previous Status is {stats}</b>",parse_mode="HTML")
     bot.send_message(call.message.chat.id,text=f"<b>List Of Already Posted Channels</b> \n\n <code>{AlredyPost}</code>",parse_mode="HTML")
     bot.send_message(call.message.chat.id,text=f"<b>List Of Failed Channels</b> \n\n <code>{failedlist}</code>",parse_mode="HTML")
@@ -1004,16 +1100,113 @@ def callback_inline(call):
   if call.data=="userinfo":
     m = bot.send_message(call.message.chat.id,text="<b>Send me user Id.</b>",parse_mode="HTML")
     bot.register_next_step_handler(m,userdtl)
+  if call.data=="chnlinfo":
+    ak = bot.send_message(call.message.chat.id,text="Send me Channel Id")
+    bot.register_next_step_handler(ak,ChnlInfo)
+  if call.data=="updtsubs":
+    values_list3 = sheet1.col_values(2)
+    while("" in values_list3):
+      values_list3.remove("")
+    failed=""
+    for i in values_list3:
+      try:
+        subcount= bot.get_chat_members_count(chat_id=i)
+        cells = sheet1.find(i)
+        row = cells.row
+        sheet1.update(f"I{row}",subcount)
+        time.sleep(2)
+      except Exception as e:
+        failed+=f"{i} {e}\n"
+    bot.send_message(call.message.chat.id,text=f"Failed Status: \n{failed}")
+    bot.send_message(call.message.chat.id,text=f"Subscribers Update Done")
+  if call.data=="rearrngechnl":
+    sheet1.sort((6, 'des'),range='A1:K999')
+    values_list3 = sheet1.col_values(2)
+    while("" in values_list3):
+      values_list3.remove("")
+    total_count = len(values_list3)
+    print(total_count)
+    for i in range(1,total_count+1):
+      print(i)
+      sheet1.update(f"A{i}",i)
+    bot.send_message(call.message.chat.id,text=f"✅ Rearranged All\nTotal Channels : {total_count}")
+  if call.data=="rmvchnl":
+    ak = bot.send_message(call.message.chat.id,text="Send me Channel Ids T9 Remove")
+    bot.register_next_step_handler(ak,Chnl2Remove)
   if call.data=="clsewndw":
     cid = call.message.chat.id
     mid = call.message.message_id
     bot.delete_message(cid,mid)
+    
 
-
+def Chnl2Remove(m):
+  #chnlid1 = f"{m.text}"
+  chnlids = m.text
+  allchannellist = chnlids.splitlines()
+  for chnlid1 in allchannellist:
+    prefix = chnlid1[0:4]
+    prefix1 = chnlid1[0:3]
+    chnlid=""
+    if prefix=="-100":
+      chnlid+=chnlid1
+    elif prefix1=="100":
+      chnlid+=f"-{chnlid1}"
+    else:
+      chnlid+=f"-100{chnlid1}"
+    try:
+      celluccuser = sheet1.find(chnlid)
+      cellurowuser = celluccuser.row
+      chnlname1 = sheet1.get(f"C{cellurowuser}").first()
+      AdminId = sheet1.get(f"G{cellurowuser}").first()
+      sheet1.batch_clear([f"A{cellurowuser}:K{cellurowuser}"])
+      ak = client.open(Config.sheetname)
+      sheetyyy = ak.worksheet(f"{AdminId}")
+      celluccuser1 = sheetyyy.find(chnlid)
+      cellurowuser1 = celluccuser1.row
+      sheetyyy.batch_clear([f"A{cellurowuser1}:E{cellurowuser1}"])
+      bot.send_message(m.chat.id,text=f"Channel Removed\n{chnlid} - {chnlname1}")
+    except Exception as e:
+      print(e)
+      bot.send_message(m.chat.id,text=f"Channel Failed/Not Found\n{chnlid}")
+    ak = client.open(Config.sheetname)
+    sheetyyy1 = ak.worksheet(f"{AdminId}")
+    h = sheetyyy1.get('A11').first()
+    if int(h) == 0:
+      ak.del_worksheet(sheetyyy1)
+    else:
+      print("..")
+    
+def ChnlInfo(m):
+  chnlid1 = f"{m.text}"
+  prefix = chnlid1[0:4]
+  prefix1 = chnlid1[0:3]
+  chnlid=""
+  if prefix=="-100":
+    chnlid+=chnlid1
+  elif prefix1=="100":
+    chnlid+=f"-{chnlid1}"
+  else:
+    chnlid+=f"-100{chnlid1}"
+  try:
+    celluccuser = sheet1.find(chnlid)
+    cellurowuser = celluccuser.row
+    chnlname1 = sheet1.get(f"C{cellurowuser}").first()
+    chnlUname1 = sheet1.get(f"D{cellurowuser}").first()
+    privtlnk = sheet1.get(f"E{cellurowuser}").first()
+    AdminId = sheet1.get(f"G{cellurowuser}").first()
+    subcount = bot.get_chat_members_count(chat_id=chnlid)
+    bot.send_message(m.chat.id,text=normaltext.AbouTChnl.format(chnlname1,chnlid,chnlUname1,subcount,privtlnk,AdminId),reply_markup=buttons.Clswndw.key,parse_mode="HTML",disable_web_page_preview=True)
+  except Exception as e:
+    print(e)
+    bot.send_message(m.chat.id,text="<b>Not Found In Database</b>",parse_mode="HTML")
+    
+  
+  
+  
 def userdtl(m):
   Id = int(m.text)
-  print(m.text)
-  usrlnk = f"<a href='tg://user?id={m.text}'>{m.text}</a>"
+  text = bot.escape("akhil")
+  usrlnk = f"<a href='tg://user?id={Id}'>{text}</a>"
   #bot.delete_message(m.chat.id,m.message_id)
   bot.send_message(m.chat.id,text=f"{usrlnk}",parse_mode="HTML")
 
@@ -1038,12 +1231,15 @@ def dltonepst2(m):
           sheet1.update(f"I{row}","Deleted")
           sheet1.update(f"J{row}","0")
           Pass+=1
+          time.sleep(2)
         elif int(mid) == 0:
+          time.sleep(2)
           AlredyDelete+=f"\n{man_detail1}"
           bot.send_message(m.chat.id,f"{man_detail1} Already Deleted")
         else:
           bot.send_message(m.chat.id,f"{man_detail1} Failed bcz list id {mid}")
       except Exception as e:
+        time.sleep(2)
         failedlist+=f"\n{man_detail1}"
         bot.send_message(m.chat.id,f"{man_detail1} failed with error {e}")
       time.sleep(1)
@@ -1073,7 +1269,9 @@ def frwrdpstfew1(m):
         sheet1.update(f"J{row}",f"{aa.message_id}")
         time.sleep(1)
         Pass+=1
+        time.sleep(2)
       except Exception as e:
+        time.sleep(2)
         Fail+=1
         failedlist+=man_detail1
         bot.send_message(m.chat.id,text=f"{man_detail1} Failed with error {e}")
@@ -1164,6 +1362,20 @@ def updtchnlinalist(m):
         sk = bot.send_message(m.chat.id,text=f"<b>send me number not text</b>",parse_mode="HTML")
         bot.register_next_step_handler(sk,updtchnlinalist)
 
+def updtreqsub(m):
+  if f"{m.text}" in cancellist:
+      qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+      bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+      bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
+  else:
+      py = m.text.isdigit()
+      if py == True:
+        sheet3.update("B13",m.text)
+        bot.reply_to(m,text="<b>✅ Update</b>",parse_mode="HTML",reply_markup=buttons.AdminHome.key)
+      else:
+        sk = bot.send_message(m.chat.id,text=f"<b>send me number not text</b>",parse_mode="HTML")
+        bot.register_next_step_handler(sk,updtreqsub)
+
 
 def updtpic(m):
   try:
@@ -1243,7 +1455,7 @@ def channeladd1(m):
           bot.send_message(m.chat.id,text =normaltext.ChnlAlrdyInDTbse,reply_markup=buttons.Ntanychnl.key,parse_mode="HTML")
         else:
           subcount= bot.get_chat_members_count(chat_id=chnlid)
-          Min = normaltext.MaxLimitUser
+          Min = sheet3.get('B13').first()#normaltext.MaxLimitUser
           if int(subcount) >= int(Min):
             chnlname = m.forward_from_chat.title
             chnlusername = m.forward_from_chat.username
@@ -1267,17 +1479,36 @@ def channeladd1(m):
             sheet1.update_cell(int(j1),1 ,f"{j1}")
             sheet1.update_cell(int(j1),2 ,f"{chnlid}")
             sheet1.update_cell(int(j1),3 ,f"{chnlname}")
-            sheet1.update_cell(int(j1),4 ,f"@{chnlusername}")
+            sheet1.update_cell(int(j1),4 ,f"{chnlusername}")
             sheet1.update_cell(int(j1),5 ,"")
             sheet1.update_cell(int(j1),6 ,f"{subcount}")
             sheet1.update_cell(int(j1),7 ,f"{adminid}")
             sheet1.update_cell(int(j1),8 ,"0")
             sheet1.update_cell(int(j1),9 ,"Deleted")
             sheet1.update_cell(int(j1),10 ,"0")
-            m = bot.send_message(m.chat.id,text = "<b>Send private link of your channel</b>",reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
-            bot.register_next_step_handler(m,addlink)
+            try:
+              #create_chat_invite_link
+              #invitelnk = bot.create_chat_invite_link(chnlid, member_limit=9999)
+              invitelnk1 = bot.create_chat_invite_link(chnlid)
+              invitelnk = invitelnk1.invite_link
+              #bot.send_message(m.chat.id,invitelnk)
+              sheet1.update_cell(int(j1),5 ,invitelnk)
+              bot.send_message(m.chat.id,text=normaltext.ChnlAdSucess.format(invitelnk,chnlname),disable_web_page_preview=True,reply_markup=buttons.Sucessaddchnl.key,parse_mode="HTML")
+              usrlnk = f"<a href='tg://user?id={m.chat.id}'>{m.from_user.first_name}</a>"
+              #chnlusrnm1 = sheet1.get(f"D{cellurowcc}").first()
+              chnlusrnm=""
+              if chnlusername == "None":
+                chnlusrnm+="-"
+              else:
+                chnlusrnm+=f"@{chnlusername}"
+              #subcount= bot.get_chat_members_count(chat_id=chnldid)
+              bot.send_message(chat_id=Config.sponcergroup,text=normaltext.chnlsccnotifytogroup.format(chnlname,chnlid,chnlusrnm,subcount,invitelnk,usrlnk),disable_web_page_preview=True,parse_mode="HTML")
+            except Exception as e:
+              print(e)
+              m = bot.send_message(m.chat.id,text = "<b>Send private link of your channel</b>",reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
+              bot.register_next_step_handler(m,addlink)
           else:
-            ak = bot.send_message(m.chat.id,text=normaltext.NotEnfSub.format(subcount),reply_markup=buttons.Ntanychnl.key,parse_mode="HTML")
+            ak = bot.send_message(m.chat.id,text=normaltext.NotEnfSub.format(Min,subcount),reply_markup=buttons.Ntanychnl.key,parse_mode="HTML")
       except:
         ak = bot.send_message(m.chat.id,text="<b>Error:</b> <code>Please authrise me with the rights of Post & Delete and Forward The Post Again. Please Try Again</code>",parse_mode="HTML")
         bot.register_next_step_handler(ak, channeladd1)
@@ -1286,6 +1517,7 @@ def channeladd1(m):
       bot.register_next_step_handler(ak, channeladd1)
 
 def addlink(m):
+  time.sleep(5)
   lnk = m.text
   admnid = m.chat.id
   cellu = sheet2.find(f"{admnid}")
@@ -1299,17 +1531,11 @@ def addlink(m):
     sheetyyy = ak.worksheet(f"{admnid}")
     celluccuser = sheetyyy.find(chnldid)
     cellurowuser = celluccuser.row
-    cell_list = sheetyyy.range(f"A{cellurowuser}:E{cellurowuser}")
-    for cell in cell_list:
-      cell.value = ''
-      sheetyyy.update_cells(cell_list)
+    sheetyyy.batch_clear([f"A{cellurowuser}:E{cellurowuser}"])
     qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
     bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
     bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
-    cell_list1 = sheet1.range(f"A{cellurowcc}:K{cellurowcc}")
-    for cell in cell_list1:
-      cell.value = ''
-      sheet1.update_cells(cell_list1)
+    sheet1.batch_clear([f"A{cellurowcc}:K{cellurowcc}"])
   else:
     myre = '^(http|https|t.me)://'
     if re.search(myre,lnk):
@@ -1318,6 +1544,15 @@ def addlink(m):
       chnlname1 = sheet1.get(chnlnamex).first()
       sheet1.update(cellidc,lnk)
       bot.send_message(m.chat.id,text=normaltext.ChnlAdSucess.format(lnk,chnlname1),disable_web_page_preview=True,reply_markup=buttons.Sucessaddchnl.key,parse_mode="HTML")
+      usrlnk = f"<a href='tg://user?id={m.chat.id}'>{m.from_user.first_name}</a>"
+      chnlusrnm1 = sheet1.get(f"D{cellurowcc}").first()
+      chnlusrnm=""
+      if chnlusrnm1 == "None":
+        chnlusrnm+="-"
+      else:
+        chnlusrnm+=f"@{chnlusrnm1}"
+      subcount= bot.get_chat_members_count(chat_id=chnldid)
+      bot.send_message(chat_id=Config.sponcergroup,text=normaltext.chnlsccnotifytogroup.format(chnlname1,chnldid,chnlusrnm,subcount,lnk,usrlnk),disable_web_page_preview=True,parse_mode="HTML")
     else:
       ak = bot.send_message(m.chat.id,text="<b>channel link is not valid,Please Send Me Link Again</b>",parse_mode="HTML")
       bot.register_next_step_handler(ak, addlink)
@@ -1330,6 +1565,7 @@ def addlink(m):
     print("..")
   am = bot.send_message(m.chat.id,text="⏳",reply_markup=buttons.RmvKeyBrd.key)
   bot.delete_message(chat_id=m.chat.id,message_id=am.message_id)
+
 
 @server.route('/' + TOKEN, methods=['POST'])
 def getMessage():
