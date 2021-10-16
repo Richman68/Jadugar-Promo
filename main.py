@@ -16,6 +16,8 @@ import normaltext
 import buttons
 import demoji
 import emojis
+import markdown
+#output = markdown.markdown
 
 TOKEN = Config.BOT_TOKEN
 bot = telebot.TeleBot(token=TOKEN)#,parse_mode="HTML")
@@ -382,6 +384,7 @@ def callback_inline(call):
     ListChnl = Config.ListChannel
     lisType = sheet3.get('B1').first()
     EntryInOneList = sheet3.get('B10').first()
+    ExtraChannel = sheet3.get("B12").first
     #sheet1.sort((6, 'des'))
     #sheet1.sort((6, 'asc'), range='A1:K999')
     sheet1.sort((6, 'des'),range='A1:K999')
@@ -517,6 +520,13 @@ def callback_inline(call):
       header = sheet3.get('B4').first()
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
+      extrchnl = ""
+      tag = ExtraChannel.splitlines()
+      for h in tag:
+        c_detail, c_link = (i.split("="))
+        channel_detail = c_detail.strip()
+        channel_link = c_link.strip()
+        extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
       contxt = ""
       for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
         Name = i1.strip()
@@ -600,7 +610,8 @@ def callback_inline(call):
           for y in range(Linetosplit):
             new_l = spliallline[(x*Linetosplit)+y]
             dk+=f"\n{new_l}"
-        dk+=f"\n\n{footer}"
+        dk+=f"\n{extrchnl}"
+        dk+=f"\n{footer}"
         enblwebpageveiw = sheet3.get('B9').first()
         if f"{enblwebpageveiw}" == "Yes":
           if f"{fxdbtn}" == "Yes":
