@@ -20,8 +20,11 @@ vrfyuser = types.InlineKeyboardButton(" 🔁 Verify Users ", callback_data="vrfy
 brdcastUser = types.InlineKeyboardButton(" 📢 Broadcast ", callback_data="brdcstusrs")
 UserInfo = types.InlineKeyboardButton(" 👦 User Info ", callback_data="userinfo")
 vrfychnl = types.InlineKeyboardButton(" 🔁 Verify Channels ", callback_data="vrfychnls")
+MnmRqrdSubs = types.InlineKeyboardButton("📶 Minimum Req. Subs. ", callback_data="mnmreqsubs")
 ChnlInfo = types.InlineKeyboardButton(" ⚠️ Channel Info ", callback_data="chnlinfo")
 RmvChnl = types.InlineKeyboardButton(" ⛔ Remove A Channel ", callback_data="rmvchnl")
+UpdtSubs = types.InlineKeyboardButton(" 🔄 Update Subscribers ", callback_data="updtsubs")
+Rearrngechnl = types.InlineKeyboardButton(" ☢️ Rearrange Channels ", callback_data="rearrngechnl")
 LstWebPrvw = types.InlineKeyboardButton(" List Web preview ", callback_data="lstwebprvw")
 setListType = types.InlineKeyboardButton(" 💡 List Type ", callback_data="listtypeset")
 ClassicUNameListY = types.InlineKeyboardButton(" ✅ Classic  UUname List ", callback_data="clicknotagn")#"clsklUnameistY")
@@ -78,6 +81,7 @@ class DevBtn:
   key.add(btnaddcnnl,btnmychnl)
   key.add(btnhelp,btnhome)
   key.add(btnshrebot)
+
 class Sucessaddchnl:
   key = types.InlineKeyboardMarkup()
   key.add(btnaddcnnl,btnmychnl)
@@ -85,6 +89,10 @@ class Sucessaddchnl:
 class OrtnCancel:
   key = types.InlineKeyboardMarkup()
   key.add(btnhome)
+
+class Clswndw:
+  key = types.InlineKeyboardMarkup()
+  key.add(Closewndw)
 
 class CancelKey:
   keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True,resize_keyboard=True)
@@ -101,7 +109,7 @@ class AdminMenu:
   key = types.InlineKeyboardMarkup()
   key.add(adminuseropt,adminchnlopt)
   key.add(adminlistopt)
-  key.add(FakeChannelEntry)
+  #key.add(FakeChannelEntry)
 
 class Adminuserpnl:
   key = types.InlineKeyboardMarkup()
@@ -112,7 +120,8 @@ class Adminuserpnl:
 class Adminchnlpnl:
   key = types.InlineKeyboardMarkup()
   key.add(vrfychnl,ChnlInfo)
-  key.add(RmvChnl)
+  key.add(RmvChnl,UpdtSubs)
+  key.add(MnmRqrdSubs,Rearrngechnl)
   key.add(btnadmnhome)
 
 class AdminListpnl:
