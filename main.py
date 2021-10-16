@@ -384,7 +384,7 @@ def callback_inline(call):
     ListChnl = Config.ListChannel
     lisType = sheet3.get('B1').first()
     EntryInOneList = sheet3.get('B10').first()
-    ExtraChannel = sheet3.get("B12").first
+    ExtraChannel = sheet3.get('B14').first
     #sheet1.sort((6, 'des'))
     #sheet1.sort((6, 'asc'), range='A1:K999')
     sheet1.sort((6, 'des'),range='A1:K999')
