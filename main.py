@@ -520,8 +520,8 @@ def callback_inline(call):
       header = sheet3.get('B4').first()
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
-      print(ExtraChannel)
       ExtraChannel1 = f"{ExtraChannel}"
+      print(ExtraChannel1)
       extrchnl = ""
       #output = markdown.markdown(ExtraChannel)
       tag = ExtraChannel1.splitlines()
