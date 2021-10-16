@@ -520,15 +520,8 @@ def callback_inline(call):
       header = sheet3.get('B4').first()
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
-      #ExtraChannel = sheet3.get('B14').first()
-      #ExtraChannel1 = f"{ExtraChannel}"
-      #print(ExtraChannel1)
       values_listA = sheet3.col_values(3)
-      #values_listB = sheet1.col_values(5)
       extrchnl = ""
-      #tag = ExtraChannel.splitlines()
-      #tag = ExtraChannel.splitlines()
-      #print(tag)
       for h in values_listA:
         print("1")
         print(h)
