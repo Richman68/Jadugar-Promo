@@ -523,7 +523,7 @@ def callback_inline(call):
       #ExtraChannel = sheet3.get('B14').first()
       #ExtraChannel1 = f"{ExtraChannel}"
       #print(ExtraChannel1)
-      values_listA = sheet1.col_values(3)
+      values_listA = sheet3.col_values(3)
       #values_listB = sheet1.col_values(5)
       extrchnl = ""
       #tag = ExtraChannel.splitlines()
