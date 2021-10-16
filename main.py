@@ -384,7 +384,7 @@ def callback_inline(call):
     ListChnl = Config.ListChannel
     lisType = sheet3.get('B1').first()
     EntryInOneList = sheet3.get('B10').first()
-    ExtraChannel = sheet3.get('B14').first
+    #ExtraChannel = sheet3.get('B14').first
     #sheet1.sort((6, 'des'))
     #sheet1.sort((6, 'asc'), range='A1:K999')
     sheet1.sort((6, 'des'),range='A1:K999')
@@ -520,15 +520,16 @@ def callback_inline(call):
       header = sheet3.get('B4').first()
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
-      print(header)
       #ExtraChannel = sheet3.get('B14').first()
       #ExtraChannel1 = f"{ExtraChannel}"
       #print(ExtraChannel1)
+      values_listA = sheet1.col_values(3)
+      #values_listB = sheet1.col_values(5)
       extrchnl = ""
       #tag = ExtraChannel.splitlines()
-      tag = ExtraChannel.splitlines()
-      print(tag)
-      for h in tag:
+      #tag = ExtraChannel.splitlines()
+      #print(tag)
+      for h in values_listA:
         print("1")
         print(h)
         new_cn = h.strip()
