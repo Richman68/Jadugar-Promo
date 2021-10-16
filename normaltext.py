@@ -1,3 +1,5 @@
+from config import Config
+
 welcome = '''👋 Welcome {} . 
 This is Promotion Bot for Registration 
 Of channels.'''
@@ -6,11 +8,8 @@ adminpnl = '''👤 This is The Admin Pannel'''
 
 nonadminpnl = '''<b>Opps! ☹️ , You are not an admin</b>'''
 
-sharetext = '''<b>I invite You to join The Best ProkutPromotion Bot of Ever</b>'''
-
-AdminUsername = "@OfficialManagerAdmin"
-MaxLimitUser = 5
-botUsername = "Promotionv4TestBot"
+sharetext = '''<b>I invite You to join The Best Promotion Bot of This Era.
+Bot Username : @{}</b>'''
 
 HelpText = '''<b>⚠️ This is Help Pannel:
 
@@ -43,14 +42,15 @@ updateChnlData = "<b>☹️ Its Not For u</b>"
 
 ReisterStepA = '''<b>Now follow the following steps</b>
 
-<code>1. Add bot as Admin with Post and Delete Rights.
-2. Forward any Parent message from the respective channel</code>'''
+<code>1. Add bot as Admin with Post , Delete Rights and Invite users By Link .
+2. If u will Right Of Invite Users By link then You have not to submit Link by u own.
+3. Forward any Parent message from the respective channel</code>'''
 
 NotanyChnl = '''<b>⚠️ You haven't registered any channel with our bot yet Or Channels might have been removed or banned</b>'''
 
-NotEnfSub = "<b>Error:</b> <code>Your Channel Have not Minimum Required Subscribers. Should Have minimum" + f" {MaxLimitUser} " + "Subscribers But Your channel have only {} subscribers.</code>"
+NotEnfSub = "<b>Error:</b> <code>Your Channel Have not Minimum Required Subscribers. Should Have minimum" + " {} " + "Subscribers But Your channel have only {} subscribers.</code>"
 
-ChnlAlrdyInDTbse =  "<b>Channel is already in database Contact " + AdminUsername + " to any queries.</b>"
+ChnlAlrdyInDTbse =  "<b>Channel is already in database Contact " + Config.AdminUsername + " to any queries.</b>"
 
 usrststext = '''<b>Bot Users Statics 📊
 ➖➖➖➖➖➖➖➖➖➖➖➖➖
@@ -82,3 +82,22 @@ Successful :</b> {}
 ListdeleteSucess = '''<b>List Delete Status:
 Successful :</b> {}
 <b>Failed :</b> {}'''
+
+chnlsccnotifytogroup = '''<b>✅ New Entry Submitted
+■□■□■□■□■■□■□■□■□■
+Name : {}
+🆔 :</b> <code>{}</code>
+<b>Username : {}</b>
+<b>Subscribers :</b> <code>{}</code>
+<b>Link : {}</b>
+<b>👤 Admin :</b> {}'''
+
+
+AbouTChnl = '''<b>Channel Details
+■□■□■□■□■■□■□■□■□■
+Name : {}
+🆔 :</b> <code>{}</code>
+<b>Username : {}</b>
+<b>Subscribers :</b> <code>{}</code>
+<b>Link : {}</b>
+<b>👤 Admin :</b> {}'''
