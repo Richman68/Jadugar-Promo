@@ -522,14 +522,14 @@ def callback_inline(call):
       emoji = sheet3.get('B6').first()
       print(ExtraChannel)
       extrchnl = ""
-      output = markdown.markdown(ExtraChannel)
-      tag = output.splitlines()
+      #output = markdown.markdown(ExtraChannel)
+      tag = ExtraChannel.splitlines()
       for h in tag:
-        #c_detail, c_link = (i.split("="))
-        #channel_detail = c_detail.strip()
-        #channel_link = c_link.strip()
-        extrchnl+=f"{h}\n"
-        #extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
+        c_detail, c_link = (i.split("="))
+        channel_detail = c_detail.strip()
+        channel_link = c_link.strip()
+        #extrchnl+=f"{h}\n"
+        extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
       print(extrchnl)
       contxt = ""
       for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
