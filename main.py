@@ -17,7 +17,7 @@ import buttons
 import demoji
 import emojis
 import markdown
-#output = markdown.markdown
+
 
 TOKEN = Config.BOT_TOKEN
 bot = telebot.TeleBot(token=TOKEN)#,parse_mode="HTML")
@@ -521,12 +521,14 @@ def callback_inline(call):
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
       extrchnl = ""
-      tag = ExtraChannel.splitlines()
+      output = markdown.markdown(ExtraChannel)
+      tag = output.splitlines()
       for h in tag:
-        c_detail, c_link = (i.split("="))
-        channel_detail = c_detail.strip()
-        channel_link = c_link.strip()
-        extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
+        #c_detail, c_link = (i.split("="))
+        #channel_detail = c_detail.strip()
+        #channel_link = c_link.strip()
+        extrchnl+=f"{h}\n"
+        #extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
       contxt = ""
       for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
         Name = i1.strip()
