@@ -525,10 +525,12 @@ def callback_inline(call):
       #ExtraChannel1 = f"{ExtraChannel}"
       #print(ExtraChannel1)
       extrchnl = ""
-      tag = ExtraChannel.splitlines()
+      #tag = ExtraChannel.splitlines()
       tag = ExtraChannel.splitlines()
       print(tag)
       for h in tag:
+        print("1")
+        print(h)
         new_cn = h.strip()
         c_detail, c_link = (new_cn.split("="))
         channel_detail = c_detail.strip()
