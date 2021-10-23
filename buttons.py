@@ -43,7 +43,8 @@ Hdrspncr = types.InlineKeyboardButton(text="⬆️ Header Sponcer ", callback_da
 Ftrspncr = types.InlineKeyboardButton(text="⬇️ Footer Sponcer ", callback_data="ftrspncr")
 SetEmoji = types.InlineKeyboardButton(text="♐ Emoji ", callback_data="setemoji")
 SetCptn = types.InlineKeyboardButton(text="♎ Set Captions ", callback_data="setcptn")
-ChnlInaList = types.InlineKeyboardButton(text="Channels In One List", callback_data="chnlinalist")
+ChnlInaList = types.InlineKeyboardButton(text="Chnl In A List", callback_data="chnlinalist")
+ChrctrInaNme = types.InlineKeyboardButton(text="Chrchtr In A Name", callback_data="chrctrinanme")
 SetPic = types.InlineKeyboardButton(text="▶️ Set Pic ", callback_data="setpic")
 FxdButtonN = types.InlineKeyboardButton(" ◻️ Add Buttons ", callback_data="FxdButtonN")
 FxdButtonY = types.InlineKeyboardButton(" ✅ Remove Buttons ", callback_data="FxdButtonY")
@@ -132,7 +133,7 @@ class AdminListpnl:
   key.add(SetEmoji,SetCptn)
   key.add(SetPic,LstWebPrvw)
   key.add(FrwdList,DltList)
-  key.add(ChnlInaList)
+  key.add(ChnlInaList,ChrctrInaNme)
   key.add(btnadmnhome)
   
 class ClassicUListY:
@@ -211,10 +212,10 @@ class SponcerpicN:
   
 class CaptsY:
   key = types.InlineKeyboardMarkup()
-  key.add(captN)
+  key.add(captY)
   key.add(UpdatwCapt,Closewndw)
 
 class CaptsN:
   key = types.InlineKeyboardMarkup()
-  key.add(captY)
+  key.add(captN)
   key.add(UpdatwCapt,Closewndw)
