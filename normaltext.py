@@ -101,3 +101,9 @@ Name : {}
 <b>Subscribers :</b> <code>{}</code>
 <b>Link : {}</b>
 <b>👤 Admin :</b> {}'''
+
+subsuptstst = '''<b>Subscribers Update Status:
+➖➖➖➖➖➖➖➖➖➖➖➖➖
+Total :</b> {}
+<b>Success :</b> {}
+<b>Failed :</b> {}'''
