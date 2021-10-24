@@ -1297,11 +1297,15 @@ def ChnlInfo(m):
   
 def userdtl(m):
   Id = int(m.text)
-  text = bot.escape("akhil")
-  chat = bot.get_chat(Id)
-  usrlnk = f"<a href='tg://user?id={Id}'>{text}</a>"
-  #bot.delete_message(m.chat.id,m.message_id)
-  bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
+  try:
+    text = bot.escape("akhil")
+    chat = bot.get_chat(Id)
+    usrlnk = f"<a href='tg://user?id={Id}'>{text}</a>"
+    #bot.delete_message(m.chat.id,m.message_id)
+    bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
+  except Exception as e:
+    print(e)
+
 
 def dltonepst2(m):
   chnlids = m.text
