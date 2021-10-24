@@ -1292,9 +1292,8 @@ def ChnlInfo(m):
     print(e)
     bot.send_message(m.chat.id,text="<b>Not Found In Database</b>",parse_mode="HTML")
     
-  
-  
-  
+ 
+ 
 def userdtl(m):
   Id = int(m.text)
   try:
@@ -1312,9 +1311,8 @@ def userdtl(m):
     usrlnk = f"Click Here \n👉 <a href='tg://user?id={UId}'>{Name}</a>"
     bot.send_message(m.chat.id,text=usrlnk,parse_mode="HTML")
   except Exception as e:
-    print(e)
     error = f"{e}".split("Description: ")[1]
-    bot.send_message(m.chat.id,error)
+    bot.send_message(m.chat.id,"<i>error</i>",parse_mode="HTML")
 
 def dltonepst2(m):
   chnlids = m.text
