@@ -1304,6 +1304,7 @@ def userdtl(m):
     usrlnk = f"Click Here \n👉 <a href='tg://user?id={UId}'>Name</a>"
     bot.send_message(m.chat.id,text=usrlnk,parse_mode="HTML")
   except Exception as e:
+    print(e)
     error = f"{e}".split("Description: ")[1]
     bot.send_message(m.chat.id,error)
 
