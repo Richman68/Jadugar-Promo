@@ -1299,13 +1299,18 @@ def userdtl(m):
   Id = int(m.text)
   try:
     #text = bot.escape("akhil")
-    chat = bot.get_chat(Id)
+    
     usrlnk = f"<a href='tg://user?id={Id}'>akhil</a>"
     #bot.delete_message(m.chat.id,m.message_id)
     bot.send_message(m.chat.id,text=f"{usrlnk}",parse_mode="HTML")
   except Exception as e:
     print(e)
-  bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
+  print("1")
+  try:
+    chat = bot.get_chat(Id)
+    bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
+  except Exception as e:
+    print(e)
 
 
 def dltonepst2(m):
