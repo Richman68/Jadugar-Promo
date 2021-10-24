@@ -1298,10 +1298,11 @@ def ChnlInfo(m):
 def userdtl(m):
   Id = int(m.text)
   try:
-    text = bot.escape("akhil")
+    #text = bot.escape("akhil")
     chat = bot.get_chat(Id)
-    usrlnk = f"<a href='tg://user?id={Id}'>{text}</a>"
+    usrlnk = f"<a href='tg://user?id={Id}'>akhil</a>"
     #bot.delete_message(m.chat.id,m.message_id)
+    bot.send_message(m.chat.id,text=f"{usrlnk}",parse_mode="HTML")
     bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
   except Exception as e:
     print(e)
