@@ -1297,9 +1297,11 @@ def ChnlInfo(m):
   
 def userdtl(m):
   Id = int(m.text)
-  usrlnk = f"Click Here \n👉 <a href='tg://user?id={Id}'>{Id}</a>"
-  bot.send_message(m.chat.id,text=f"{usrlnk}",parse_mode="HTML")
-  #chat = bot.get_chat(Id)
+  chat = bot.get_chat(Id)
+  UId = chat.id
+  Name = chat.first_name + " " + chat.last_name
+  usrlnk = f"Click Here \n👉 <a href='tg://user?id={UId}'>Name</a>"
+  bot.send_message(m.chat.id,text=usrlnk,parse_mode="HTML")
 
 def dltonepst2(m):
   chnlids = m.text
