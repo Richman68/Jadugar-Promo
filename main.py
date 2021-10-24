@@ -1301,15 +1301,14 @@ def userdtl(m):
     chat = bot.get_chat(Id)
     UId = chat.id
     Name = ""
-    try:
-      if f"{chat.first_name}" == "None":
-        pass
-      else:
-        Name+=f"{chat.first_name}"
-      if f"{chat.last_name}" == "None":
-        pass
-      else:
-        Name+=f"{chat.last_name}"
+    if f"{chat.first_name}" == "None":
+      pass
+    else:
+      Name+=f"{chat.first_name}"
+    if f"{chat.last_name}" == "None":
+      pass
+    else:
+      Name+=f"{chat.last_name}"
     usrlnk = f"Click Here \n👉 <a href='tg://user?id={UId}'>{Name}</a>"
     bot.send_message(m.chat.id,text=usrlnk,parse_mode="HTML")
   except Exception as e:
