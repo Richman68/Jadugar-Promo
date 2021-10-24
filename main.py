@@ -1227,6 +1227,35 @@ def callback_inline(call):
     mid = call.message.message_id
     bot.delete_message(cid,mid)
     
+def brdcstusrs1(m):
+  msgId = m.message_id
+  values_list3 = sheet2.col_values(2)
+  while("" in values_list3):
+    values_list3.remove("")
+  ttlusers = len(values_list3)
+  i=0
+  j=0
+  ak = ""
+  vk = bot.send_message(m.chat.id,text=normaltext.brcststatus.format(ttlusers,i,j),parse_mode="HTML")
+  for p in values_list3:
+    try:
+      bot.forward_message(chat_id = f"{p}", from_chat_id =m.chat.id, message_id = msgId)
+      #bot.send_chat_action(f"{p}", "typing")
+      i+=1
+      bot.edit_message_text(chat_id = m.chat.id,text=normaltext.usrststext.format(ttlusers,i,j),message_id=vk.message_id,parse_mode="HTML")
+    except Exception as e:
+      j+=1
+      try:
+        error = f"{e}".split("Description: ")[1]
+        ak+=f"\n{p} {error}"
+      except Exception as e:
+        print(e)
+        ak+=f"\n{p} {e}"
+      bot.edit_message_text(chat_id = m.chat.id,text=normaltext.usrststext.format(ttlusers,i,j),message_id=vk.message_id,parse_mode="HTML")
+  try:
+    bot.send_message(m.chat.id,text=f"{ak}")
+  except:
+    bot.send_message(m.chat.id,text=f"BroadCasted To All")
 
 def Chnl2Remove(m):
   chnlids = m.text
