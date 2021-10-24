@@ -1222,40 +1222,50 @@ def callback_inline(call):
   if call.data=="rmvchnl":
     ak = bot.send_message(call.message.chat.id,text="Send me Channel Ids T9 Remove")
     bot.register_next_step_handler(ak,Chnl2Remove)
+  if call.data=="brdcstusrs":
+    ak = bot.send_message(call.message.chat.id,text="Send me any Msg to Broadcast",reply_markup=buttons.CancelKey.keyboard)
+    bot.register_next_step_handler(ak,brdcstusrs1)
   if call.data=="clsewndw":
     cid = call.message.chat.id
     mid = call.message.message_id
     bot.delete_message(cid,mid)
     
 def brdcstusrs1(m):
-  msgId = m.message_id
-  values_list3 = sheet2.col_values(2)
-  while("" in values_list3):
-    values_list3.remove("")
-  ttlusers = len(values_list3)
-  i=0
-  j=0
-  ak = ""
-  vk = bot.send_message(m.chat.id,text=normaltext.brcststatus.format(ttlusers,i,j),parse_mode="HTML")
-  for p in values_list3:
-    try:
-      bot.forward_message(chat_id = f"{p}", from_chat_id =m.chat.id, message_id = msgId)
-      #bot.send_chat_action(f"{p}", "typing")
-      i+=1
-      bot.edit_message_text(chat_id = m.chat.id,text=normaltext.usrststext.format(ttlusers,i,j),message_id=vk.message_id,parse_mode="HTML")
-    except Exception as e:
-      j+=1
+  if f"{m.text}" in cancellist:
+      qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+      bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+      bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
+  else:
+    qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+    bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+    msgId = m.message_id
+    values_list3 = sheet2.col_values(2)
+    while("" in values_list3):
+      values_list3.remove("")
+    ttlusers = len(values_list3)
+    i=0
+    j=0
+    ak = ""
+    vk = bot.send_message(m.chat.id,text=normaltext.brcststatus.format(ttlusers,i,j),parse_mode="HTML")
+    for p in values_list3:
       try:
-        error = f"{e}".split("Description: ")[1]
-        ak+=f"\n{p} {error}"
+        bot.forward_message(chat_id = f"{p}", from_chat_id =m.chat.id, message_id = msgId)
+        #bot.send_chat_action(f"{p}", "typing")
+        i+=1
+        bot.edit_message_text(chat_id = m.chat.id,text=normaltext.usrststext.format(ttlusers,i,j),message_id=vk.message_id,parse_mode="HTML")
       except Exception as e:
-        print(e)
-        ak+=f"\n{p} {e}"
-      bot.edit_message_text(chat_id = m.chat.id,text=normaltext.usrststext.format(ttlusers,i,j),message_id=vk.message_id,parse_mode="HTML")
-  try:
-    bot.send_message(m.chat.id,text=f"{ak}")
-  except:
-    bot.send_message(m.chat.id,text=f"BroadCasted To All")
+        j+=1
+        try:
+          error = f"{e}".split("Description: ")[1]
+          ak+=f"\n{p} {error}"
+        except Exception as e:
+          print(e)
+          ak+=f"\n{p} {e}"
+        bot.edit_message_text(chat_id = m.chat.id,text=normaltext.usrststext.format(ttlusers,i,j),message_id=vk.message_id,parse_mode="HTML")
+    try:
+      bot.send_message(m.chat.id,text=f"{ak}")
+    except:
+      bot.send_message(m.chat.id,text=f"BroadCasted To All")
 
 def Chnl2Remove(m):
   chnlids = m.text
