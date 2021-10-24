@@ -107,3 +107,9 @@ subsuptstst = '''<b>Subscribers Update Status:
 Total :</b> {}
 <b>Success :</b> {}
 <b>Failed :</b> {}'''
+
+brcststatus = '''<b>Broad-Casting Status 📊
+➖➖➖➖➖➖➖➖➖➖➖➖➖
+Total :</b> {}
+<b>Success :</b> {}
+<b>Failed :</b> {}'''
