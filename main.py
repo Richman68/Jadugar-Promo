@@ -1303,9 +1303,9 @@ def userdtl(m):
     usrlnk = f"<a href='tg://user?id={Id}'>akhil</a>"
     #bot.delete_message(m.chat.id,m.message_id)
     bot.send_message(m.chat.id,text=f"{usrlnk}",parse_mode="HTML")
-    bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
   except Exception as e:
     print(e)
+  bot.send_message(m.chat.id,text=f"{chat}",parse_mode="HTML")
 
 
 def dltonepst2(m):
