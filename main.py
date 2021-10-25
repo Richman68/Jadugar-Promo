@@ -124,7 +124,7 @@ def callback_inline(call):
       for i in range(1,total_count+1):
         sheetyyy.update(f"A{i}",i)
         sheetyyy.update(f"E{i}",f"akh{i}")
-      ttlvhnl = sheetyyy.get('A11').first()
+      ttlvhnl = sheetyyy.get('A21').first()
       if int(ttlvhnl) >=1:
         mid = call.message.message_id
         values_list1 = sheetyyy.col_values(2)
@@ -159,7 +159,7 @@ def callback_inline(call):
     cnlcell = sheet1.find(valueFromCallBack)
     row1 = cnlcell.row
     sheet1.batch_clear([f"A{row1}:K{row1}"])
-    h = sheetyyy.get('A11').first()
+    h = sheetyyy.get('A21').first()
     if int(h) == 0:
       bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
       ak.del_worksheet(sheetyyy)
@@ -1301,7 +1301,7 @@ def Chnl2Remove(m):
     bot.delete_message(m.chat.id,sk.message_id)
     ak = client.open(Config.sheetname)
     sheetyyy1 = ak.worksheet(f"{AdminId}")
-    h = sheetyyy1.get('A11').first()
+    h = sheetyyy1.get('A21').first()
     if int(h) == 0:
       ak.del_worksheet(sheetyyy1)
     else:
@@ -1642,7 +1642,7 @@ def channeladd1(m):
               sheetxx = ak.worksheet(f"{adminid}")
               max = "=MAX(A1:A10)"
               sheetxx.update_cell(11,1, max)
-            h = sheetxx.get('A11').first()
+            h = sheetxx.get('A21').first()
             h1 = int(h) + 1
             sheetxx.update_cell(int(h1),1 ,f"{h1}")
             sheetxx.update_cell(int(h1),2 ,f"{chnlid}")
@@ -1733,7 +1733,7 @@ def addlink(m):
       bot.register_next_step_handler(ak, addlink)
   ak = client.open(Config.sheetname)
   sheetyyy1 = ak.worksheet(f"{admnid}")
-  h = sheetyyy1.get('A11').first()
+  h = sheetyyy1.get('A21').first()
   if int(h) == 0:
     ak.del_worksheet(sheetyyy1)
   else:
