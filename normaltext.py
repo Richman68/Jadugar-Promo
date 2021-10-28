@@ -108,8 +108,23 @@ Total :</b> {}
 <b>Success :</b> {}
 <b>Failed :</b> {}'''
 
+
 brcststatus = '''<b>Broad-Casting Status 📊
 ➖➖➖➖➖➖➖➖➖➖➖➖➖
 Total :</b> {}
 <b>Success :</b> {}
 <b>Failed :</b> {}'''
+
+chnldtltext = '''<b>Channel Details Fetched ✅: 
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+➥ Id :</b> <code>{}</code>
+➥ <b>Name : {}</b>
+➥ <b>Username : {}</b>
+➥ <b>Subscribers :</b> <code>{}</code>
+➥ <b>Link : {}
+
+⚠️ Note:</b> <code>In Promotion List Above Name will be displayed. You can update all details in two ways:</code>
+<b>☞ Auto </b>➟<code> <i>Channel Details Will be extract From The Telegram Database.</i></code>
+<b>☞ Manually </b>➟ <code><i>Channel Details Will be update by you.</i></code>'''
+
+sametextormarkuperror = '''A request to the Telegram API was unsuccessful. Error code: 400. Description: Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message'''
