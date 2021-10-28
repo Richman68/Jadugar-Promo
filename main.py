@@ -1638,10 +1638,10 @@ def channeladd1(m):
             try:
               sheetxx = ak.worksheet(f"{adminid}")
             except:
-              worksheet = ak.add_worksheet(title=f"{adminid}", rows="11", cols="5")
+              worksheet = ak.add_worksheet(title=f"{adminid}", rows="21", cols="5")
               sheetxx = ak.worksheet(f"{adminid}")
-              max = "=MAX(A1:A10)"
-              sheetxx.update_cell(11,1, max)
+              max = "=MAX(A1:A20)"
+              sheetxx.update_cell(21,1, max)
             h = sheetxx.get('A21').first()
             h1 = int(h) + 1
             sheetxx.update_cell(int(h1),1 ,f"{h1}")
