@@ -678,6 +678,17 @@ def callback_inline(call):
       header = sheet3.get('B4').first()
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
+      values_listA = sheet3.col_values(3)
+      extrchnl = ""
+      for h in values_listA:
+        print("1")
+        print(h)
+        new_cn = h.strip()
+        c_detail, c_link = (new_cn.split("="))
+        channel_detail = c_detail.strip()
+        channel_link = c_link.strip()
+        #extrchnl+=f"{h}\n"
+        extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
       contxt = ""
       for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
         Name = i1.strip()
@@ -761,7 +772,8 @@ def callback_inline(call):
           for y in range(Linetosplit):
             new_l = spliallline[(x*Linetosplit)+y]
             dk+=f"\n{new_l}"
-        dk+=f"\n\n{footer}"
+        dk+=f"\n{extrchnl}"
+        dk+=f"\n{footer}"
         enblwebpageveiw = sheet3.get('B9').first()
         if f"{enblwebpageveiw}" == "Yes":
           if f"{fxdbtn}" == "Yes":
