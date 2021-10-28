@@ -8,6 +8,7 @@ btnhelp = types.InlineKeyboardButton(text=" 🆘 Help  ", callback_data="hlp")
 btnshrebot = types.InlineKeyboardButton(text="🔄 Share Bot  ", switch_inline_query="")
 btnabtdev = types.InlineKeyboardButton("About Dev ❤️", callback_data="strtDevEdt")
 
+
 Closewndw = types.InlineKeyboardButton(text="❌ Close",callback_data = "clsewndw")
 #admin
 btnhome = types.InlineKeyboardButton(" 🔙 ", callback_data="backtohome")
@@ -219,3 +220,4 @@ class CaptsN:
   key = types.InlineKeyboardMarkup()
   key.add(captN)
   key.add(UpdatwCapt,Closewndw)
+  
