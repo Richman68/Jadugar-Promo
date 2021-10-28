@@ -35,8 +35,8 @@ dvlprText = '''<b>About Me 😎
 <b>----------------------------------------------------</b>
 <b>Made With ❤️ In India 🇮🇳 </b>'''
 
-note = "⚠️ Note:- Your default channel description is your channel name. If u want to update it then use comamnd"
-ChnlAdSucess = f"<b>✅ Your channel</b> "+ '<a href="{}">{} </a>' + f"<b>is added successfully. </b> \n\n<code>{note}</code> /update_Chnl_Data ."
+note = "⚠️ Note:- Your default channel description is your channel name. If u want to update it then Go through My channels"
+ChnlAdSucess = f"<b>✅ Your channel</b> "+ '<a href="{}">{} </a>' + f"<b>is added successfully. </b> \n\n<code>{note}</code> ."
 
 updateChnlData = "<b>☹️ Its Not For u</b>"
 
