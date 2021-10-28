@@ -115,7 +115,7 @@ def callback_inline(call):
       userid = call.message.chat.id
       ak = client.open(Config.sheetname)
       sheetyyy = ak.worksheet(f"{userid}")
-      sheetyyy.sort((2, 'des'),range='A1:E10')
+      sheetyyy.sort((2, 'des'),range='A1:E20')
       values_list5 = sheetyyy.col_values(2)
       while("" in values_list5):
         values_list5.remove("")
@@ -141,12 +141,130 @@ def callback_inline(call):
           keyboard.add(callback_btn1,callback_btn2)
         keyboard.add(buttons.btnhome)
         mid = call.message.message_id
-        bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.message_id,reply_markup = keyboard,parse_mode="HTML")
+        bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅\n\n⚠️ Note : </b> <code>Click On channel Button to Get/Edit All Details About Channel</code>",message_id=call.message.message_id,reply_markup = keyboard,parse_mode="HTML")
       else:
         bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
     except Exception as e:
       print(e)
       bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
+  if (call.data.startswith("['editname'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      userid = call.message.chat.id
+      cells = sheet2.find(f"{userid}")
+      rowx = cells.row
+      sheet2.update(f"D{rowx}",valueFromCallBack)
+      ak = bot.send_message(call.message.chat.id,text="<b>Send your new name for channel</b>",parse_mode="HTML",reply_markup=buttons.CancelKey.keyboard)
+      bot.register_next_step_handler(ak,updtnewname)
+    except Exception as e:
+      print(e)
+  if (call.data.startswith("['editlink'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      userid = call.message.chat.id
+      cells = sheet2.find(f"{userid}")
+      rowx = cells.row
+      sheet2.update(f"D{rowx}",valueFromCallBack)
+      ak = bot.send_message(call.message.chat.id,text="<b>Send your new Link for channel</b>",parse_mode="HTML",reply_markup=buttons.CancelKey.keyboard)
+      bot.register_next_step_handler(ak,updtnewlink)
+    except Exception as e:
+      print(e)
+  if (call.data.startswith("['editdtlmnual'")):
+    valueFromCallBack = ast.literal_eval(call.data)[1]
+    ak = client.open(Config.sheetname)
+    userid = call.message.chat.id
+    mid = call.message.message_id
+    key = types.InlineKeyboardMarkup()
+    Editname = types.InlineKeyboardButton(text="📝 Edit Name", callback_data="['editname', '" + valueFromCallBack + "']")
+    chatdtl = bot.get_chat(f"{valueFromCallBack}")
+    chatllink = chatdtl.invite_link
+    Editlink = types.InlineKeyboardButton(text="🔗 Edit Link", callback_data="['editlink', '" + valueFromCallBack + "']")
+    if f"{chatllink}" == "None":
+      key.add(Editname)
+    else:
+      key.add(Editname,Editlink)
+    btn3 = types.InlineKeyboardButton(text="🔙", callback_data="['key', '" + valueFromCallBack + "']")
+    key.add(btn3)
+    bot.edit_message_text(chat_id = f"{userid}",text ="<b>🛠️ Edit Your Channel Details</b>",message_id=call.message.message_id,reply_markup = key,parse_mode="HTML",disable_web_page_preview=True)
+    print("working")
+  if (call.data.startswith("['editdtlauto'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      ak = client.open(Config.sheetname)
+      userid = call.message.chat.id
+      mid = call.message.message_id
+      cells = sheet1.find(valueFromCallBack)
+      rowx = cells.row
+      chatdtl = bot.get_chat(f"{valueFromCallBack}")
+      chatId = chatdtl.id
+      chatTtl = chatdtl.title
+      sheet1.update(f"C{rowx}",chatTtl)
+      chatUsrName =""
+      chatUsrName1 = chatdtl.username
+      if f"{chatUsrName1}" == "None":
+        chatUsrName+="N/A"
+        sheet1.update(f"D{rowx}","None")
+      else:
+        chatUsrName+="@" + chatUsrName1
+        sheet1.update(f"D{rowx}",chatUsrName1)
+      chatLink=""
+      try:
+        chatLink+= chatdtl.invite_link
+        sheet1.update(f"E{rowx}",chatLink)
+      except:
+        chatLink+= sheet1.get(f"E{rowx}").first()
+        bot.answer_callback_query(callback_query_id=call.id, show_alert=True , text="I haven't right to get Link of ur channel. Give me right of invite users by link or else you can update it manually")
+      Susb = bot.get_chat_members_count(f"{valueFromCallBack}")
+      sheet1.update(f"F{rowx}",Susb)
+      key = types.InlineKeyboardMarkup()
+      updtdtlauto = types.InlineKeyboardButton(text="🔁 Update Details (Auto)", callback_data="['editdtlauto', '" + valueFromCallBack + "']")
+      updtdtlmanually = types.InlineKeyboardButton(text="🔂 Update Details (Manually)", callback_data="['editdtlmnual', '" + valueFromCallBack + "']")
+      btn3 = types.InlineKeyboardButton(text="🔙", callback_data="mychnl")
+      key.add(updtdtlauto)
+      key.add(updtdtlmanually)
+      key.add(btn3)
+      bot.edit_message_text(chat_id = f"{userid}",text =normaltext.chnldtltext.format(chatId,chatTtl,chatUsrName,Susb,chatLink),message_id=call.message.message_id,reply_markup = key,parse_mode="HTML",disable_web_page_preview=True)
+      bot.answer_callback_query(callback_query_id=call.id, show_alert=True , text="✅ Updated Successfully")
+    except Exception as e:
+      if f"{e}" == normaltext.sametextormarkuperror:
+        bot.answer_callback_query(callback_query_id=call.id, show_alert=True , text="✅ Chat Details Already Updated")
+      else:
+        print(e)
+  if (call.data.startswith("['key'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      ak = client.open(Config.sheetname)
+      userid = call.message.chat.id
+      mid = call.message.message_id
+      cells = sheet1.find(valueFromCallBack)
+      rowx = cells.row
+      dataofchnl = sheet1.row_values(f"{rowx}")
+      chnlid = dataofchnl[1]
+      chnlname = dataofchnl[2]
+      chanlusername = ""
+      chanlusername1 = dataofchnl[3]
+      if f"{chanlusername1}" == "None":
+        chanlusername+="N/A"
+      else:
+        chanlusername+="@" + chanlusername1
+      chnlprivatelnk = dataofchnl[4]
+      chnlSubs = dataofchnl[5]
+      key = types.InlineKeyboardMarkup()
+      updtdtlauto = types.InlineKeyboardButton(text="🔁 Update Details (Auto)", callback_data="['editdtlauto', '" + valueFromCallBack + "']")
+      updtdtlmanually = types.InlineKeyboardButton(text="🔂 Update Details (Manually)", callback_data="['editdtlmnual', '" + valueFromCallBack + "']")
+      btn3 = types.InlineKeyboardButton(text="🔙", callback_data="mychnl")
+      key.add(updtdtlauto)
+      key.add(updtdtlmanually)
+      key.add(btn3)
+      bot.edit_message_text(chat_id = f"{userid}",text =normaltext.chnldtltext.format(chnlid,chnlname,chanlusername,chnlSubs,chnlprivatelnk),message_id=call.message.message_id,reply_markup = key,parse_mode="HTML",disable_web_page_preview=True)
+    except Exception as e:
+      print(e)
+    #chatdtl = bot.get_chat(f"{valueFromCallBack}")
+    #chatId = chatdtl.id
+    #chatTtl = chatdtl.title
+    #chatUsrName = chatdtl.username
+    #chatLink = chatdtl.invite_link
+    #Susb = bot.get_chat_members_count(f"{valueFromCallBack}")
   if (call.data.startswith("['remove'")):
     valueFromCallBack = ast.literal_eval(call.data)[1]
     ak = client.open(Config.sheetname)
@@ -159,6 +277,8 @@ def callback_inline(call):
     cnlcell = sheet1.find(valueFromCallBack)
     row1 = cnlcell.row
     sheet1.batch_clear([f"A{row1}:K{row1}"])
+    bot.send_message(userid,text=f"<b>Channel With ID </b><code>{valueFromCallBack} </code><b>has been #Removed Successfully.</b>",parse_mode="HTML")
+    bot.send_message(chat_id=Config.sponcergroup,text=f"<b>⚠️ #Removed \n🆔 : </b><code>{valueFromCallBack} </code>",parse_mode="HTML")
     h = sheetyyy.get('A21').first()
     if int(h) == 0:
       bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.NotanyChnl,message_id=call.message.message_id,reply_markup = buttons.Ntanychnl.key,parse_mode="HTML")
@@ -179,8 +299,6 @@ def callback_inline(call):
         keyboard.add(callback_btn1,callback_btn2)
       keyboard.add(buttons.btnhome)
       #bot.edit_message_text(chat_id = f"{userid}",text = "<b>Your registered channels are here✅</b>",message_id=call.message.message_id,reply_markup = keyboard,parse_mode="HTML")
-      bot.send_message(userid,text=f"<b>Channel With ID </b><code>{valueFromCallBack} </code><b>has been #Removed Successfully.</b>",parse_mode="HTML")
-      bot.send_message(chat_id=Config.sponcergroup,text=f"<b>⚠️ #Removed \n🆔 : </b><code>{valueFromCallBack} </code>",parse_mode="HTML")
       bot.edit_message_reply_markup(userid,mid,reply_markup = keyboard)
   if call.data == "useropt":
     bot.edit_message_text(chat_id = call.message.chat.id,text="<b>⚙️ Users Settings</b>",message_id=call.message.message_id,reply_markup=buttons.Adminuserpnl.key,parse_mode="HTML")
@@ -560,17 +678,6 @@ def callback_inline(call):
       header = sheet3.get('B4').first()
       footer = sheet3.get('B5').first()
       emoji = sheet3.get('B6').first()
-      values_listA = sheet3.col_values(3)
-      extrchnl = ""
-      for h in values_listA:
-        print("1")
-        print(h)
-        new_cn = h.strip()
-        c_detail, c_link = (new_cn.split("="))
-        channel_detail = c_detail.strip()
-        channel_link = c_link.strip()
-        #extrchnl+=f"{h}\n"
-        extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
       contxt = ""
       for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
         Name = i1.strip()
@@ -654,8 +761,7 @@ def callback_inline(call):
           for y in range(Linetosplit):
             new_l = spliallline[(x*Linetosplit)+y]
             dk+=f"\n{new_l}"
-        dk+=f"\n{extrchnl}"
-        dk+=f"\n{footer}"
+        dk+=f"\n\n{footer}"
         enblwebpageveiw = sheet3.get('B9').first()
         if f"{enblwebpageveiw}" == "Yes":
           if f"{fxdbtn}" == "Yes":
@@ -1267,6 +1373,64 @@ def brdcstusrs1(m):
     except:
       bot.send_message(m.chat.id,text=f"BroadCasted To All")
 
+def updtnewname(m):
+  #print(m)
+  if f"{m.content_type}" == "text":
+    if f"{m.text}" in cancellist:
+      qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+      bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+      bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
+    else:
+      uid = m.chat.id
+      cells = sheet2.find(f"{uid}")
+      rowx = cells.row
+      chnlid = sheet2.get(f"D{rowx}").first()
+      cell1 = sheet1.find(f"{chnlid}")
+      row1 = cell1.row
+      sheet1.update(f"C{row1}",f"{m.text}")
+      key = types.InlineKeyboardMarkup()
+      btn3 = types.InlineKeyboardButton(text="🔙", callback_data="mychnl")
+      key.add(btn3)
+      qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+      bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+      bot.reply_to(m,text="<b>✅ Update, This Name will be Display in List For respective channel.</b>",parse_mode="HTML",reply_markup=key)
+  else:
+    print(m.content_type)
+    ak = bot.send_message(m.chat.id,text="<b>Send me text format only..send me again</b>",parse_mode="HTML")
+    bot.register_next_step_handler(ak,updtnewname)
+
+def updtnewlink(m):
+  #print(m)
+  if f"{m.content_type}" == "text":
+    if f"{m.text}" in cancellist:
+      qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+      bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+      bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
+    else:
+      lnk = f"{m.text}"
+      myre = '^(http|https|t.me)://'
+      if re.search(myre,lnk):
+        uid = m.chat.id
+        cells = sheet2.find(f"{uid}")
+        rowx = cells.row
+        chnlid = sheet2.get(f"D{rowx}").first()
+        cell1 = sheet1.find(f"{chnlid}")
+        row1 = cell1.row
+        sheet1.update(f"E{row1}",f"{m.text}")
+        key = types.InlineKeyboardMarkup()
+        btn3 = types.InlineKeyboardButton(text="🔙", callback_data="mychnl")
+        key.add(btn3)
+        qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+        bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+        bot.reply_to(m,text="<b>✅ Update</b>",parse_mode="HTML",reply_markup=key)
+      else:
+        ak = bot.send_message(m.chat.id,text="<b>Invalid Url Format..send me url again</b>",parse_mode="HTML")
+        bot.register_next_step_handler(ak,updtnewlink)
+  else:
+    print(m.content_type)
+    ak = bot.send_message(m.chat.id,text="<b>Send me  Link in text format only..send me again</b>",parse_mode="HTML")
+    bot.register_next_step_handler(ak,updtnewlink)
+
 def Chnl2Remove(m):
   chnlids = m.text
   allchannellist = chnlids.splitlines()
@@ -1331,8 +1495,6 @@ def ChnlInfo(m):
     print(e)
     bot.send_message(m.chat.id,text="<b>Not Found In Database</b>",parse_mode="HTML")
     
- 
- 
 def userdtl(m):
   Id = int(m.text)
   try:
@@ -1673,7 +1835,7 @@ def channeladd1(m):
               #chnlusrnm1 = sheet1.get(f"D{cellurowcc}").first()
               chnlusrnm=""
               if chnlusername == "None":
-                chnlusrnm+="-"
+                chnlusrnm+="N/A"
               else:
                 chnlusrnm+=f"@{chnlusername}"
               #subcount= bot.get_chat_members_count(chat_id=chnldid)
@@ -1723,7 +1885,7 @@ def addlink(m):
       chnlusrnm1 = sheet1.get(f"D{cellurowcc}").first()
       chnlusrnm=""
       if chnlusrnm1 == "None":
-        chnlusrnm+="-"
+        chnlusrnm+="N/A"
       else:
         chnlusrnm+=f"@{chnlusrnm1}"
       subcount= bot.get_chat_members_count(chat_id=chnldid)
