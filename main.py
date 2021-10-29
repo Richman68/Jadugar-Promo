@@ -949,189 +949,192 @@ def callback_inline(call):
             sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
       bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
     if f"{lisType}" == "Buttonlist":
-      header = sheet3.get('B4').first()
-      footer = sheet3.get('B5').first()
-      emoji = sheet3.get('B6').first()
-      contxt = ""
-      for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
-        Name = i1.strip()
-        Uname = i2.strip()
-        Link = i3.strip()
-        list_emoji = emojis.get(f'{Name}')
-        Name4 = demoji.replace(Name, "")
-        #Name4 = Name2.replace(" ", "")
-        #Name4 = Name3.lower()
-        emoji2add=""
-        emoji2add2=""
-        Name5=""
-        list_emoji2 = list(Config.EmojiText)
-        wordcount = emojis.count(Config.EmojiText)
-        n2 = random.randint(1,int(wordcount))
-        emoji2add2+="{}".format(list(list_emoji2)[n2])
-        try:
-          list_emoji1 = list(list_emoji)
-          emoji2add+="{}".format(list_emoji1[0])
-          Name5+= "{}".format(Name4)
-        except:
+      try:
+        header = sheet3.get('B4').first()
+        footer = sheet3.get('B5').first()
+        emoji = sheet3.get('B6').first()
+        contxt = ""
+        for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
+          Name = i1.strip()
+          Uname = i2.strip()
+          Link = i3.strip()
+          list_emoji = emojis.get(f'{Name}')
+          Name4 = demoji.replace(Name, "")
+          #Name4 = Name2.replace(" ", "")
+          #Name4 = Name3.lower()
+          emoji2add=""
+          emoji2add2=""
+          Name5=""
+          list_emoji2 = list(Config.EmojiText)
+          wordcount = emojis.count(Config.EmojiText)
+          n2 = random.randint(1,int(wordcount))
+          emoji2add2+="{}".format(list(list_emoji2)[n2])
           try:
-            n = random.randint(1,int(wordcount))
-            emoji2add+="{}".format(list(list_emoji2)[n])
+            list_emoji1 = list(list_emoji)
+            emoji2add+="{}".format(list_emoji1[0])
             Name5+= "{}".format(Name4)
-          except Exception as e:
-            print(e)
-            emoji2add+="🚹"
-            Name5+= "{}".format(Name4)
-        if len(f"{Name5}") >= ChrhctrLimit:
-          Name1 = Name5[0:ChrhctrLimit]
-          contxt+=f"\n{emoji2add} {Name1} {emoji2add2} = {Link}"
-        else:
-          contxt+=f"\n{emoji2add} {Name5} {emoji2add2} = {Link}"
-      lines = contxt.split("\n")
-      non_empty_lines = [line for line in lines if line.strip() != ""]
-      finallines = ""
-      for line in non_empty_lines:
-        finallines += line + "\n"
-      spliallline = finallines.splitlines()
-      nmbrline = len(spliallline)
-      Linetosplit = int(EntryInOneList)
-      totalpara1 = nmbrline/Linetosplit
-      totalpara = round(totalpara1)
-      remainder = nmbrline%Linetosplit
-      ListPstId = []
-      fg = bot.send_message(call.message.chat.id,text="List Creating...")
-      for x in range(int(totalpara)):
-        fxdbtn = sheet3.get('B3').first()
-        keyboard = types.InlineKeyboardMarkup()
-        dk =""
-        if int(x + 1)== int(totalpara):
-          if int(remainder*2) >= Linetosplit:
-            new_l1=spliallline[-int(remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
+          except:
+            try:
+              n = random.randint(1,int(wordcount))
+              emoji2add+="{}".format(list(list_emoji2)[n])
+              Name5+= "{}".format(Name4)
+            except Exception as e:
+              print(e)
+              emoji2add+="🚹"
+              Name5+= "{}".format(Name4)
+          if len(f"{Name5}") >= ChrhctrLimit:
+            Name1 = Name5[0:ChrhctrLimit]
+            contxt+=f"\n{emoji2add} {Name1} {emoji2add2} = {Link}"
           else:
-            new_l1=spliallline[-int(Linetosplit+remainder):]
-            for new_l in new_l1:
+            contxt+=f"\n{emoji2add} {Name5} {emoji2add2} = {Link}"
+        lines = contxt.split("\n")
+        non_empty_lines = [line for line in lines if line.strip() != ""]
+        finallines = ""
+        for line in non_empty_lines:
+          finallines += line + "\n"
+        spliallline = finallines.splitlines()
+        nmbrline = len(spliallline)
+        Linetosplit = int(EntryInOneList)
+        totalpara1 = nmbrline/Linetosplit
+        totalpara = round(totalpara1)
+        remainder = nmbrline%Linetosplit
+        ListPstId = []
+        fg = bot.send_message(call.message.chat.id,text="List Creating...")
+        for x in range(int(totalpara)):
+          fxdbtn = sheet3.get('B3').first()
+          keyboard = types.InlineKeyboardMarkup()
+          dk =""
+          if int(x + 1)== int(totalpara):
+            if int(remainder*2) >= Linetosplit:
+              new_l1=spliallline[-int(remainder):]
+              for new_l in new_l1:
+                dk+=f"\n{new_l}"
+            else:
+              new_l1=spliallline[-int(Linetosplit+remainder):]
+              for new_l in new_l1:
+                dk+=f"\n{new_l}"
+          else:
+            for y in range(Linetosplit):
+              new_l = spliallline[(x*Linetosplit)+y]
               dk+=f"\n{new_l}"
-        else:
-          for y in range(Linetosplit):
-            new_l = spliallline[(x*Linetosplit)+y]
-            dk+=f"\n{new_l}"
-        enblwebpageveiw = sheet3.get('B9').first()
-        lines1 = dk.split("\n")
-        non_empty_lines1 = [line for line in lines1 if line.strip() != ""]
-        ok = ""
-        for line in non_empty_lines1:
-          ok += line + "\n"
-        everyline = ok.splitlines()
-        for u in everyline:
-          #print(u)
-          c_detail, c_link = (u.split("="))
-          channel_detail = c_detail.strip()
-          channel_link = c_link.strip()
-          btn1 = types.InlineKeyboardButton(channel_detail, url=channel_link)
-          keyboard.add(btn1)
-          #sk+=f"\n{channel_detail}\n<a href='{channel_link}'>{emoji}Join Now{emoji}</a>\n"
-        #sk+=f"\n{footer}"
-        if f"{fxdbtn}" == "Yes":
-          fxdbtndata = sheet3.get('B2').first()
-          pakshi = f"{fxdbtndata}"
-          tag_split = pakshi.splitlines()
-          for each_cn in tag_split:
-            new_cn = each_cn.strip()
-            splitter = " | "
-            if splitter in each_cn:
-              manybtn = (new_cn.split("|"))
-              row = []
-              for i in manybtn:
-                c_detail, c_link = (i.split("="))
+          enblwebpageveiw = sheet3.get('B9').first()
+          lines1 = dk.split("\n")
+          non_empty_lines1 = [line for line in lines1 if line.strip() != ""]
+          ok = ""
+          for line in non_empty_lines1:
+            ok += line + "\n"
+          everyline = ok.splitlines()
+          for u in everyline:
+            #print(u)
+            c_detail, c_link = (u.split("="))
+            channel_detail = c_detail.strip()
+            channel_link = c_link.strip()
+            btn1 = types.InlineKeyboardButton(channel_detail, url=channel_link)
+            keyboard.add(btn1)
+            #sk+=f"\n{channel_detail}\n<a href='{channel_link}'>{emoji}Join Now{emoji}</a>\n"
+          #sk+=f"\n{footer}"
+          if f"{fxdbtn}" == "Yes":
+            fxdbtndata = sheet3.get('B2').first()
+            pakshi = f"{fxdbtndata}"
+            tag_split = pakshi.splitlines()
+            for each_cn in tag_split:
+              new_cn = each_cn.strip()
+              splitter = " | "
+              if splitter in each_cn:
+                manybtn = (new_cn.split("|"))
+                row = []
+                for i in manybtn:
+                  c_detail, c_link = (i.split("="))
+                  channel_detail = c_detail.strip()
+                  channel_link = c_link.strip()
+                  row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
+                keyboard.row(*row)
+              else:
+                c_detail, c_link = (new_cn.split("="))
                 channel_detail = c_detail.strip()
                 channel_link = c_link.strip()
-                row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
-              keyboard.row(*row)
+                btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
+                keyboard.add(btn)
+            picyoN = sheet3.get('B11').first()
+            if f"{picyoN}" == "Yes":
+              picValue = sheet3.get('B8').first()
+              CaptyoN = sheet3.get('B12').first()
+              if f"{CaptyoN}" == "Yes":
+                captValue = sheet3.get('B7').first()
+                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
+              else:
+                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
             else:
-              c_detail, c_link = (new_cn.split("="))
-              channel_detail = c_detail.strip()
-              channel_link = c_link.strip()
-              btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
-              keyboard.add(btn)
-          picyoN = sheet3.get('B11').first()
-          if f"{picyoN}" == "Yes":
-            picValue = sheet3.get('B8').first()
-            CaptyoN = sheet3.get('B12').first()
-            if f"{CaptyoN}" == "Yes":
               captValue = sheet3.get('B7').first()
-              jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
-            else:
-              jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
+              if f"{enblwebpageveiw}" == "Yes":
+                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
+              else:
+                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
           else:
-            captValue = sheet3.get('B7').first()
-            if f"{enblwebpageveiw}" == "Yes":
-              jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
+            #print("ak")
+            picyoN = sheet3.get('B11').first()
+            #print(picyoN)
+            if f"{picyoN}" == "Yes":
+              picValue = sheet3.get('B8').first()
+              CaptyoN = sheet3.get('B12').first()
+              if f"{CaptyoN}" == "Yes":
+                captValue = sheet3.get('B7').first()
+                #print("1")
+                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
+              else:
+                #print("2")
+                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
             else:
-              jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
-        else:
-          #print("ak")
-          picyoN = sheet3.get('B11').first()
-          #print(picyoN)
-          if f"{picyoN}" == "Yes":
-            picValue = sheet3.get('B8').first()
-            CaptyoN = sheet3.get('B12').first()
-            if f"{CaptyoN}" == "Yes":
               captValue = sheet3.get('B7').first()
-              #print("1")
-              jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
+              if f"{enblwebpageveiw}" == "Yes":
+                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
+              else:
+                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",disable_web_page_preview=True,reply_markup=keyboard)
+                msgid = jk.message_id
+                ListPstId.append(msgid)
+        linkforlist=""
+        cnt=0
+        for i in ListPstId:
+          cnt+=1
+          linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
+        TotalList = len(ListPstId)
+        for q in range(TotalList):
+          if remainder > 0:
+            if int(q+1) == int(TotalList):
+              if int(remainder*2) >= Linetosplit:
+                for y in range(remainder):
+                  time.sleep(2)
+                  sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+              else:
+                for y in range(int(remainder+Linetosplit)):
+                  time.sleep(2)
+                  sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
             else:
-              #print("2")
-              jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
-          else:
-            captValue = sheet3.get('B7').first()
-            if f"{enblwebpageveiw}" == "Yes":
-              jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
-            else:
-              jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",disable_web_page_preview=True,reply_markup=keyboard)
-              msgid = jk.message_id
-              ListPstId.append(msgid)
-      linkforlist=""
-      cnt=0
-      for i in ListPstId:
-        cnt+=1
-        linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
-      TotalList = len(ListPstId)
-      for q in range(TotalList):
-        if remainder > 0:
-          if int(q+1) == int(TotalList):
-            if int(remainder*2) >= Linetosplit:
-              for y in range(remainder):
+              for y in range(Linetosplit):
                 time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-            else:
-              for y in range(int(remainder+Linetosplit)):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
           else:
             for y in range(Linetosplit):
               time.sleep(2)
               sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-        else:
-          for y in range(Linetosplit):
-            time.sleep(2)
-            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
+      except Exception as e:
+        print(e)
   if call.data=="setblwbtns":
     fxdbtn = sheet3.get('B3').first()
     if f"{fxdbtn}" == "No":
