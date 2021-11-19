@@ -61,6 +61,7 @@ FrwdAll = types.InlineKeyboardButton(text=" ➡️ To All ", callback_data="frwr
 FrwdFew = types.InlineKeyboardButton(text=" ☯️ To Few ", callback_data="frwrdpstfew")
 DltAll = types.InlineKeyboardButton(text=" 🗑️ To All ", callback_data="dltpstall")
 DltFew = types.InlineKeyboardButton(text=" 🗑️ To Few ", callback_data="dltpstfew")
+LstAutoMation = types.InlineKeyboardButton(text=" 🔬 List Automation ", callback_data="lstautomation")
 btncncl = types.KeyboardButton('🚫 Cancel')
 UpdatwCapt = types.InlineKeyboardButton(text="🔄 Update Caption ", callback_data="updtcptn")
 UpdatwPic = types.InlineKeyboardButton(text="🔄 Update Pic ", callback_data="updtpic")
@@ -135,6 +136,7 @@ class AdminListpnl:
   key.add(SetPic,LstWebPrvw)
   key.add(FrwdList,DltList)
   key.add(ChnlInaList,ChrctrInaNme)
+  key.add(LstAutoMation)
   key.add(btnadmnhome)
   
 class ClassicUListY:
