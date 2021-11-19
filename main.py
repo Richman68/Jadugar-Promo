@@ -13,9 +13,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 from random import sample
 from config import Config
 import normaltext
+import listautomation
+import datetime
+from datetime import datetime
+from datetime import date 
 import buttons
 import demoji
 import emojis
+import pytz
+from datetime import timedelta
 
 TOKEN = Config.BOT_TOKEN
 bot = telebot.TeleBot(token=TOKEN)#,parse_mode="HTML")
@@ -32,10 +38,23 @@ sheet3 = ak.worksheet(Config.sheetC)
 
 class User:
     def __init__(self, header):
-        self.header = header
-        self.pic = pic
+        self.listpostcatg = listpostcatg
+
+ist1 = pytz.timezone('Asia/Calcutta')
+currentTimeIST = datetime.now(ist1)
 
 cancellist = ["🚫 Cancel","/start"]
+AutoPostingcat = []
+CurrentTimerolist = []
+
+cat3TimeMinlist = []
+
+Passed = []
+AlreadyDoneID= []
+Failed = []
+FailedID = []
+
+
 
 @bot.inline_handler(lambda query: True)
 def query_text(query):
@@ -50,16 +69,6 @@ def query_text(query):
   else:
     print("Query Not Defined")
 
-@bot.message_handler(commands=['update_Chnl_Data'])
-def updatedata(m):
-  bot.delete_message(m.chat.id,m.message_id)
-  if m.chat.type=="private":
-    ak = bot.send_message(m.chat.id,text=normaltext.updateChnlData,parse_mode="HTML")
-    time.sleep(5)
-    bot.delete_message(m.chat.id,ak.message_id)
-  else:
-    bot.send_message(m.chat.id,text="<b>☠️ Bot works in private only</b>",parse_mode="HTML")
-  
 @bot.message_handler(commands=['start'])
 def wlcm(m):
   if m.chat.type=="private":
@@ -81,6 +90,11 @@ def wlcm(m):
   else:
     bot.delete_message(m.chat.id,m.message_id)
     bot.send_message(m.chat.id,text="<b>☠️ Bot works in private only</b>",parse_mode="HTML")
+
+@bot.message_handler(commands=['check'])
+def akhil(m):
+  print(AutoPostingcat)
+  print(CurrentTimerolist)
 
 @bot.message_handler(commands=['admin'])
 def admincmd(m):
@@ -180,9 +194,9 @@ def callback_inline(call):
     chatllink = chatdtl.invite_link
     Editlink = types.InlineKeyboardButton(text="🔗 Edit Link", callback_data="['editlink', '" + valueFromCallBack + "']")
     if f"{chatllink}" == "None":
-      key.add(Editname)
-    else:
       key.add(Editname,Editlink)
+    else:
+      key.add(Editname)
     btn3 = types.InlineKeyboardButton(text="🔙", callback_data="['key', '" + valueFromCallBack + "']")
     key.add(btn3)
     bot.edit_message_text(chat_id = f"{userid}",text ="<b>🛠️ Edit Your Channel Details</b>",message_id=call.message.message_id,reply_markup = key,parse_mode="HTML",disable_web_page_preview=True)
@@ -259,12 +273,6 @@ def callback_inline(call):
       bot.edit_message_text(chat_id = f"{userid}",text =normaltext.chnldtltext.format(chnlid,chnlname,chanlusername,chnlSubs,chnlprivatelnk),message_id=call.message.message_id,reply_markup = key,parse_mode="HTML",disable_web_page_preview=True)
     except Exception as e:
       print(e)
-    #chatdtl = bot.get_chat(f"{valueFromCallBack}")
-    #chatId = chatdtl.id
-    #chatTtl = chatdtl.title
-    #chatUsrName = chatdtl.username
-    #chatLink = chatdtl.invite_link
-    #Susb = bot.get_chat_members_count(f"{valueFromCallBack}")
   if (call.data.startswith("['remove'")):
     valueFromCallBack = ast.literal_eval(call.data)[1]
     ak = client.open(Config.sheetname)
@@ -538,603 +546,26 @@ def callback_inline(call):
     mid = call.message.message_id
     bot.edit_message_text(chat_id = call.message.chat.id,text="🗑️ List Delete Options",message_id=call.message.message_id,parse_mode="HTML",reply_markup=buttons.DltListopt.key)
   if call.data=="createlist":
+    listmakerid = call.message.chat.id
     ListChnl = Config.ListChannel
     lisType = sheet3.get('B1').first()
     EntryInOneList = sheet3.get('B10').first()
     ChrhctrLimit1 = sheet3.get('B14').first()
     ChrhctrLimit = int(ChrhctrLimit1)
-    #sheet1.sort((6, 'des'))
-    #sheet1.sort((6, 'asc'), range='A1:K999')
     sheet1.sort((6, 'des'),range='A1:K999')
     values_list1 = sheet1.col_values(3)
     values_list2 = sheet1.col_values(4)
     values_list3 = sheet1.col_values(5)
     if f"{lisType}" == "clskUlist":
-      header = sheet3.get('B4').first()
-      footer = sheet3.get('B5').first()
-      emoji = sheet3.get('B6').first()
-      contxt = ""
-      for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
-        Name = i1.strip()
-        Uname = i2.strip()
-        Link = i3.strip()
-        if f"{Uname}" == "None":
-          emojis_list_de= re.findall(r'(:[!_\-\w]+:)', Name)
-          list_emoji= [emoji.emojize(x) for x in emojis_list_de]
-          Name2 = demoji.replace(Name, "")
-          Name3 = Name2.replace(" ", "")
-          Name5 = Name3.lower()
-          #Name5 = "{}{}".format(list_emoji[0],Name4)
-          if len(f"{Name5}") >= ChrhctrLimit:
-            Name1 = Name5[0:ChrhctrLimit]
-            contxt+=f"\n{emoji} <a href='{Link}'>@{Name1}</a>"
-          else:
-            contxt+=f"\n{emoji} <a href='{Link}'>@{Name5}</a>"
-        else:
-          contxt+=f"\n{emoji} {Uname}"
-      fxdbtn = sheet3.get('B3').first()
-      if f"{fxdbtn}" == "Yes":
-        fxdbtndata = sheet3.get('B2').first()
-        pakshi = f"{fxdbtndata}"
-        tag_split = pakshi.splitlines()
-        keyboard = types.InlineKeyboardMarkup()
-        for each_cn in tag_split:
-          new_cn = each_cn.strip()
-          splitter = " | "
-          if splitter in each_cn:
-            manybtn = (new_cn.split("|"))
-            row = []
-            for i in manybtn:
-              c_detail, c_link = (i.split("="))
-              channel_detail = c_detail.strip()
-              channel_link = c_link.strip()
-              row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
-            keyboard.row(*row)
-          else:
-            c_detail, c_link = (new_cn.split("="))
-            channel_detail = c_detail.strip()
-            channel_link = c_link.strip()
-            btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
-            keyboard.add(btn)
-      else:
-        print("..")
-      lines = contxt.split("\n")
-      non_empty_lines = [line for line in lines if line.strip() != ""]
-      finallines = ""
-      for line in non_empty_lines:
-        finallines += line + "\n"
-      spliallline = finallines.splitlines()
-      nmbrline = len(spliallline)
-      Linetosplit = int(EntryInOneList)
-      totalpara1 = nmbrline/Linetosplit
-      totalpara = round(totalpara1)
-      remainder = nmbrline%Linetosplit
-      ListPstId = []
-      fg = bot.send_message(call.message.chat.id,text="List Creating...")
-      for x in range(int(totalpara)):
-        dk =""
-        dk+=header + "\n"
-        if int(x + 1)== int(totalpara):
-          if int(remainder*2) >= Linetosplit:
-            new_l1=spliallline[-int(remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
-          else:
-            new_l1=spliallline[-int(Linetosplit+remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
-        else:
-          for y in range(Linetosplit):
-            new_l = spliallline[(x*Linetosplit)+y]
-            dk+=f"\n{new_l}"
-        dk+=f"\n\n{footer}"
-        enblwebpageveiw = sheet3.get('B9').first()
-        if f"{enblwebpageveiw}" == "Yes":
-          if f"{fxdbtn}" == "Yes":
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-          else:
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML")
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-        else:
-          if f"{fxdbtn}" == "Yes":
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-          else:
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",disable_web_page_preview=True)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-      linkforlist=""
-      cnt=0
-      for i in ListPstId:
-        cnt+=1
-        linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
-      TotalList = len(ListPstId)
-      for q in range(TotalList):
-        if remainder > 0:
-          if int(q+1) == int(TotalList):
-            if int(remainder*2) >= Linetosplit:
-              for y in range(remainder):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-            else:
-              for y in range(int(remainder+Linetosplit)):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-          else:
-            for y in range(Linetosplit):
-              time.sleep(2)
-              sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-        else:
-          for y in range(Linetosplit):
-            time.sleep(2)
-            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
-    if f"{lisType}" == "clskNlist":
-      header = sheet3.get('B4').first()
-      footer = sheet3.get('B5').first()
-      emoji = sheet3.get('B6').first()
-      values_listA = sheet3.col_values(3)
-      extrchnl = ""
-      for h in values_listA:
-        print("1")
-        print(h)
-        new_cn = h.strip()
-        c_detail, c_link = (new_cn.split("="))
-        channel_detail = c_detail.strip()
-        channel_link = c_link.strip()
-        #extrchnl+=f"{h}\n"
-        extrchnl+=f"{emoji} <a href='{channel_link}'>{channel_detail}</a>\n"
-      contxt = ""
-      for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
-        Name = i1.strip()
-        Uname = i2.strip()
-        Link = i3.strip()
-        list_emoji = emojis.get(f'{Name}')
-        Name4 = demoji.replace(Name, "")
-        #Name4 = Name2.replace(" ", "")
-        #Name4 = Name3.lower()
-        Name5=""
-        try:
-          list_emoji1 = list(list_emoji)
-          Name5+= "{}{}".format(list_emoji1[0],Name4)
-        except:
-          list_emoji1 = list(Config.EmojiText)
-          print(list_emoji1)
-          wordcount = emojis.count(Config.EmojiText)
-          n = random.randint(1,int(wordcount-1))
-          try:
-            Name5+= "{}{}".format(list(list_emoji1)[n],Name4)
-          except:
-            Name5+= "🔥{}".format(Name4)
-        if len(f"{Name5}") >= ChrhctrLimit:
-          Name1 = Name5[0:ChrhctrLimit]
-          contxt+=f"\n{emoji} <a href='{Link}'>{Name1}</a>"
-        else:
-          contxt+=f"\n{emoji} <a href='{Link}'>{Name5}</a>"
-      fxdbtn = sheet3.get('B3').first()
-      if f"{fxdbtn}" == "Yes":
-        fxdbtndata = sheet3.get('B2').first()
-        pakshi = f"{fxdbtndata}"
-        tag_split = pakshi.splitlines()
-        keyboard = types.InlineKeyboardMarkup()
-        for each_cn in tag_split:
-          new_cn = each_cn.strip()
-          splitter = " | "
-          if splitter in each_cn:
-            manybtn = (new_cn.split("|"))
-            row = []
-            for i in manybtn:
-              c_detail, c_link = (i.split("="))
-              channel_detail = c_detail.strip()
-              channel_link = c_link.strip()
-              row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
-            keyboard.row(*row)
-          else:
-            c_detail, c_link = (new_cn.split("="))
-            channel_detail = c_detail.strip()
-            channel_link = c_link.strip()
-            btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
-            keyboard.add(btn)
-      else:
-        print("..")
-      lines = contxt.split("\n")
-      non_empty_lines = [line for line in lines if line.strip() != ""]
-      finallines = ""
-      #print(non_empty_lines)
-      for line in non_empty_lines:
-        finallines += line + "\n"
-      spliallline = finallines.splitlines()
-      nmbrline = len(spliallline)
-      Linetosplit = int(EntryInOneList)
-      totalpara1 = nmbrline/Linetosplit
-      totalpara = round(totalpara1)
-      remainder = nmbrline%Linetosplit
-      ListPstId = []
-      fg = bot.send_message(call.message.chat.id,text="List Creating...")
-      for x in range(int(totalpara)):
-        dk =""
-        dk+=header + "\n"
-        if int(x + 1)== int(totalpara):
-          if int(remainder*2) >= Linetosplit:
-            new_l1=spliallline[-int(remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
-          else:
-            new_l1=spliallline[-int(Linetosplit+remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
-        else:
-          for y in range(Linetosplit):
-            new_l = spliallline[(x*Linetosplit)+y]
-            dk+=f"\n{new_l}"
-        dk+=f"\n{extrchnl}"
-        dk+=f"\n{footer}"
-        enblwebpageveiw = sheet3.get('B9').first()
-        if f"{enblwebpageveiw}" == "Yes":
-          if f"{fxdbtn}" == "Yes":
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-          else:
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML")
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-        else:
-          if f"{fxdbtn}" == "Yes":
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-          else:
-            jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",disable_web_page_preview=True)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-      linkforlist=""
-      cnt=0
-      for i in ListPstId:
-        cnt+=1
-        linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
-      TotalList = len(ListPstId)
-      for q in range(TotalList):
-        if remainder > 0:
-          if int(q+1) == int(TotalList):
-            if int(remainder*2) >= Linetosplit:
-              for y in range(remainder):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-            else:
-              for y in range(int(remainder+Linetosplit)):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-          else:
-            for y in range(Linetosplit):
-              time.sleep(2)
-              sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-        else:
-          for y in range(Linetosplit):
-            time.sleep(2)
-            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
-    if f"{lisType}" == "Stndrdlist":
-      header = sheet3.get('B4').first()
-      footer = sheet3.get('B5').first()
-      emoji = sheet3.get('B6').first()
-      contxt = ""
-      for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
-        Name = i1.strip()
-        Uname = i2.strip()
-        Link = i3.strip()
-        if len(f"{Name}") >= ChrhctrLimit:
-          Name1 = Name[0:ChrhctrLimit]
-          contxt+=f"\n{Name1} = {Link}"
-        else:
-          contxt+=f"\n{Name} = {Link}"
-      fxdbtn = sheet3.get('B3').first()
-      if f"{fxdbtn}" == "Yes":
-        fxdbtndata = sheet3.get('B2').first()
-        pakshi = f"{fxdbtndata}"
-        tag_split = pakshi.splitlines()
-        keyboard = types.InlineKeyboardMarkup()
-        for each_cn in tag_split:
-          new_cn = each_cn.strip()
-          splitter = " | "
-          if splitter in each_cn:
-            manybtn = (new_cn.split("|"))
-            row = []
-            for i in manybtn:
-              c_detail, c_link = (i.split("="))
-              channel_detail = c_detail.strip()
-              channel_link = c_link.strip()
-              row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
-            keyboard.row(*row)
-          else:
-            c_detail, c_link = (new_cn.split("="))
-            channel_detail = c_detail.strip()
-            channel_link = c_link.strip()
-            btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
-            keyboard.add(btn)
-      else:
-        print("..")
-      lines = contxt.split("\n")
-      non_empty_lines = [line for line in lines if line.strip() != ""]
-      finallines = ""
-      for line in non_empty_lines:
-        finallines += line + "\n"
-      spliallline = finallines.splitlines()
-      nmbrline = len(spliallline)
-      Linetosplit = int(EntryInOneList)
-      totalpara1 = nmbrline/Linetosplit
-      totalpara = round(totalpara1)
-      remainder = nmbrline%Linetosplit
-      ListPstId = []
-      fg = bot.send_message(call.message.chat.id,text="List Creating...")
-      for x in range(int(totalpara)):
-        dk =""
-        if int(x + 1)== int(totalpara):
-          if int(remainder*2) >= Linetosplit:
-            new_l1=spliallline[-int(remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
-          else:
-            new_l1=spliallline[-int(Linetosplit+remainder):]
-            for new_l in new_l1:
-              dk+=f"\n{new_l}"
-        else:
-          for y in range(Linetosplit):
-            new_l = spliallline[(x*Linetosplit)+y]
-            dk+=f"\n{new_l}"
-        enblwebpageveiw = sheet3.get('B9').first()
-        sk = ""
-        sk+=header + "\n"
-        lines1 = dk.split("\n")
-        non_empty_lines1 = [line for line in lines1 if line.strip() != ""]
-        ok = ""
-        for line in non_empty_lines1:
-          ok += line + "\n"
-        everyline = ok.splitlines()
-        for u in everyline:
-          c_detail, c_link = (u.split("="))
-          channel_detail = c_detail.strip()
-          channel_link = c_link.strip()
-          sk+=f"\n{channel_detail}\n<a href='{channel_link}'>{emoji}Join Now{emoji}</a>\n"
-        sk+=f"\n{footer}"
-        if f"{enblwebpageveiw}" == "Yes":
-          if f"{fxdbtn}" == "Yes":
-            jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML",reply_markup=keyboard)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-          else:
-            jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML")
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-        else:
-          if f"{fxdbtn}" == "Yes":
-            jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-          else:
-            jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML",disable_web_page_preview=True)
-            msgid = jk.message_id
-            ListPstId.append(msgid)
-      linkforlist=""
-      cnt=0
-      for i in ListPstId:
-        cnt+=1
-        linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
-      TotalList = len(ListPstId)
-      for q in range(TotalList):
-        if remainder > 0:
-          if int(q+1) == int(TotalList):
-            if int(remainder*2) >= Linetosplit:
-              for y in range(remainder):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-            else:
-              for y in range(int(remainder+Linetosplit)):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-          else:
-            for y in range(Linetosplit):
-              time.sleep(2)
-              sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-        else:
-          for y in range(Linetosplit):
-            time.sleep(2)
-            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-      bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
-    if f"{lisType}" == "Buttonlist":
-      try:
-        header = sheet3.get('B4').first()
-        footer = sheet3.get('B5').first()
-        emoji = sheet3.get('B6').first()
-        contxt = ""
-        for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
-          Name = i1.strip()
-          Uname = i2.strip()
-          Link = i3.strip()
-          list_emoji = emojis.get(f'{Name}')
-          Name4 = demoji.replace(Name, "")
-          #Name4 = Name2.replace(" ", "")
-          #Name4 = Name3.lower()
-          emoji2add=""
-          emoji2add2=""
-          Name5=""
-          list_emoji2 = list(Config.EmojiText)
-          wordcount = emojis.count(Config.EmojiText)
-          n2 = random.randint(1,int(wordcount))
-          emoji2add2+="{}".format(list(list_emoji2)[n2])
-          try:
-            list_emoji1 = list(list_emoji)
-            emoji2add+="{}".format(list_emoji1[0])
-            Name5+= "{}".format(Name4)
-          except:
-            try:
-              n = random.randint(1,int(wordcount))
-              emoji2add+="{}".format(list(list_emoji2)[n])
-              Name5+= "{}".format(Name4)
-            except Exception as e:
-              print(e)
-              emoji2add+="🚹"
-              Name5+= "{}".format(Name4)
-          if len(f"{Name5}") >= ChrhctrLimit:
-            Name1 = Name5[0:ChrhctrLimit]
-            contxt+=f"\n{emoji2add} {Name1} {emoji2add2} = {Link}"
-          else:
-            contxt+=f"\n{emoji2add} {Name5} {emoji2add2} = {Link}"
-        lines = contxt.split("\n")
-        non_empty_lines = [line for line in lines if line.strip() != ""]
-        finallines = ""
-        for line in non_empty_lines:
-          finallines += line + "\n"
-        spliallline = finallines.splitlines()
-        nmbrline = len(spliallline)
-        Linetosplit = int(EntryInOneList)
-        totalpara1 = nmbrline/Linetosplit
-        totalpara = round(totalpara1)
-        remainder = nmbrline%Linetosplit
-        ListPstId = []
-        fg = bot.send_message(call.message.chat.id,text="List Creating...")
-        for x in range(int(totalpara)):
-          fxdbtn = sheet3.get('B3').first()
-          keyboard = types.InlineKeyboardMarkup()
-          dk =""
-          if int(x + 1)== int(totalpara):
-            if int(remainder*2) >= Linetosplit:
-              new_l1=spliallline[-int(remainder):]
-              for new_l in new_l1:
-                dk+=f"\n{new_l}"
-            else:
-              new_l1=spliallline[-int(Linetosplit+remainder):]
-              for new_l in new_l1:
-                dk+=f"\n{new_l}"
-          else:
-            for y in range(Linetosplit):
-              new_l = spliallline[(x*Linetosplit)+y]
-              dk+=f"\n{new_l}"
-          enblwebpageveiw = sheet3.get('B9').first()
-          lines1 = dk.split("\n")
-          non_empty_lines1 = [line for line in lines1 if line.strip() != ""]
-          ok = ""
-          for line in non_empty_lines1:
-            ok += line + "\n"
-          everyline = ok.splitlines()
-          for u in everyline:
-            #print(u)
-            c_detail, c_link = (u.split("="))
-            channel_detail = c_detail.strip()
-            channel_link = c_link.strip()
-            btn1 = types.InlineKeyboardButton(channel_detail, url=channel_link)
-            keyboard.add(btn1)
-            #sk+=f"\n{channel_detail}\n<a href='{channel_link}'>{emoji}Join Now{emoji}</a>\n"
-          #sk+=f"\n{footer}"
-          if f"{fxdbtn}" == "Yes":
-            fxdbtndata = sheet3.get('B2').first()
-            pakshi = f"{fxdbtndata}"
-            tag_split = pakshi.splitlines()
-            for each_cn in tag_split:
-              new_cn = each_cn.strip()
-              splitter = " | "
-              if splitter in each_cn:
-                manybtn = (new_cn.split("|"))
-                row = []
-                for i in manybtn:
-                  c_detail, c_link = (i.split("="))
-                  channel_detail = c_detail.strip()
-                  channel_link = c_link.strip()
-                  row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
-                keyboard.row(*row)
-              else:
-                c_detail, c_link = (new_cn.split("="))
-                channel_detail = c_detail.strip()
-                channel_link = c_link.strip()
-                btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
-                keyboard.add(btn)
-            picyoN = sheet3.get('B11').first()
-            if f"{picyoN}" == "Yes":
-              picValue = sheet3.get('B8').first()
-              CaptyoN = sheet3.get('B12').first()
-              if f"{CaptyoN}" == "Yes":
-                captValue = sheet3.get('B7').first()
-                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-              else:
-                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-            else:
-              captValue = sheet3.get('B7').first()
-              if f"{enblwebpageveiw}" == "Yes":
-                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-              else:
-                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-          else:
-            #print("ak")
-            picyoN = sheet3.get('B11').first()
-            #print(picyoN)
-            if f"{picyoN}" == "Yes":
-              picValue = sheet3.get('B8').first()
-              CaptyoN = sheet3.get('B12').first()
-              if f"{CaptyoN}" == "Yes":
-                captValue = sheet3.get('B7').first()
-                #print("1")
-                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-              else:
-                #print("2")
-                jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-            else:
-              captValue = sheet3.get('B7').first()
-              if f"{enblwebpageveiw}" == "Yes":
-                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-              else:
-                jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",disable_web_page_preview=True,reply_markup=keyboard)
-                msgid = jk.message_id
-                ListPstId.append(msgid)
-        linkforlist=""
-        cnt=0
-        for i in ListPstId:
-          cnt+=1
-          linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
-        bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
-        TotalList = len(ListPstId)
-        for q in range(TotalList):
-          if remainder > 0:
-            if int(q+1) == int(TotalList):
-              if int(remainder*2) >= Linetosplit:
-                for y in range(remainder):
-                  time.sleep(2)
-                  sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-              else:
-                for y in range(int(remainder+Linetosplit)):
-                  time.sleep(2)
-                  sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
-            else:
-              for y in range(Linetosplit):
-                time.sleep(2)
-                sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-          else:
-            for y in range(Linetosplit):
-              time.sleep(2)
-              sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
-        bot.edit_message_text(chat_id = call.message.chat.id,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
-      except Exception as e:
-        print(e)
+      CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList)
+    elif f"{lisType}" == "clskNlist":
+      createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+    elif f"{lisType}" == "Stndrdlist":
+      createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+    elif f"{lisType}" == "Buttonlist":
+      createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+    else:
+      bot.send_message(chat_id = call.message.chat.id,text="List Type is Not Definded")
   if call.data=="setblwbtns":
     fxdbtn = sheet3.get('B3').first()
     if f"{fxdbtn}" == "No":
@@ -1210,88 +641,36 @@ def callback_inline(call):
     m = bot.send_message(call.message.chat.id,text="<b>Send me Channels Ids .</b>",parse_mode="HTML")
     bot.register_next_step_handler(m,dltonepst2)
   if call.data=="dltpstall":
+    adminid = call.message.chat.id
     values_list3 = sheet1.col_values(2)
     values_list2 = sheet1.col_values(10)
-    Pass = 0
-    Fail = 0
-    AlredyDelete=""
-    failedlist=""
-    vk = bot.send_message(call.message.chat.id,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
+    Pass = len(Passed)
+    Fail = len(Failed)
+    vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
     for man_detail1,man_detail2 in zip(values_list3,values_list2):
       time.sleep(1)
-      if int(man_detail2) >= 1:
-        try:
-          bot.delete_message(man_detail1,man_detail2)
-          cells = sheet1.find(man_detail1)
-          row = cells.row
-          sheet1.update(f"I{row}","Deleted")
-          sheet1.update(f"J{row}","0")
-          Pass+=1
-          time.sleep(2)
-          bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        except Exception as e:
-          Fail+=1
-          failedlist+=f"\n{man_detail1}"
-          time.sleep(2)
-          bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-          bot.send_message(call.message.chat.id,f"{man_detail1} Failed & list id {man_detail2} and error is {e}")
-      elif int(man_detail2) == 0:
-        Fail+=1
-        bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        AlredyDelete+=f"\n{man_detail1}"
-      else:
-        Fail+=1
-        failedlist+=f"\n{man_detail1}"
-        time.sleep(2)
-        bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        bot.send_message(call.message.chat.id,text=f"<b>Failed Bcz  Current Post Id is Status is {man_detail2}</b>",parse_mode="HTML")
-    bot.send_message(call.message.chat.id,text=f"<b>List Of Already Deleted Channels</b> \n\n <code>{AlredyDelete}</code>",parse_mode="HTML")
-    bot.send_message(call.message.chat.id,text=f"<b>List Of Failed Channels</b> \n\n <code>{failedlist}</code>",parse_mode="HTML")
+      dltpostprocess(adminid,vk,man_detail1,man_detail2)
+    DltResultprint(adminid)
   if call.data=="frwrdpstfew":
     m = bot.send_message(call.message.chat.id,text="<b>Send me Channel Ids.</b>",parse_mode="HTML")
     bot.register_next_step_handler(m,frwrdpstfew1)
   if call.data=="frwrdpstall":
-    values_list1 = sheet1.col_values(2)
-    values_list2 = sheet1.col_values(8)
-    values_list3 = sheet1.col_values(10)
-    Pass = 0
-    Fail = 0
-    AlredyPost=""
-    failedlist=""
-    vk = bot.send_message(call.message.chat.id,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
-    for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
-      man_detail1 = i1.strip()
-      man_detail2 = i2.strip()
-      man_detail3 = i3.strip()
-      if int(man_detail3) == 0:
-        try:
-          aa = bot.forward_message(chat_id = f"{man_detail1}", from_chat_id =Config.ListChannel, message_id = man_detail2)
-          cells = sheet1.find(man_detail1)
-          row = cells.row
-          sheet1.update(f"I{row}","Shared")
-          sheet1.update(f"J{row}",f"{aa.message_id}")
-          time.sleep(1)
-          Pass+=1
-          time.sleep(2)
-          bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        except Exception as e:
-          Fail+=1
-          time.sleep(2)
-          failedlist+=f"\n{man_detail1}"
-          bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-          bot.send_message(call.message.chat.id,text=f"\n{man_detail1} Failed with error {e}")
-      elif int(man_detail3) >= 1:
-        Fail+=1
-        AlredyPost+=f"\n{man_detail1}"
-        bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-      else:
-        Fail+=1
-        time.sleep(2)
-        failedlist+=f"{man_detail1}"
-        bot.edit_message_text(chat_id = call.message.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        bot.send_message(call.message.chat.id,text=f"bcz previous status of {man_detail1} is {man_detail3}")
-    bot.send_message(call.message.chat.id,text=f"<b>List Of Already Posted Channels</b> \n\n <code>{AlredyPost}</code>",parse_mode="HTML")
-    bot.send_message(call.message.chat.id,text=f"<b>List Of Failed Channels</b> \n\n <code>{failedlist}</code>",parse_mode="HTML")
+    try:
+      adminid = call.message.chat.id
+      Pass = len(Passed)
+      Fail = len(Failed)
+      values_list1 = sheet1.col_values(2)
+      values_list2 = sheet1.col_values(8)
+      values_list3 = sheet1.col_values(10)
+      ap = bot.send_message(call.message.chat.id,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
+      for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
+        man_detail1 = i1.strip()
+        man_detail2 = i2.strip()
+        man_detail3 = i3.strip()
+        forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
+      FrwrdResultprint(adminid)
+    except Exception as e:
+      print(e)
   if call.data=="userinfo":
     m = bot.send_message(call.message.chat.id,text="<b>Send me user Id.</b>",parse_mode="HTML")
     bot.register_next_step_handler(m,userdtl)
@@ -1346,11 +725,895 @@ def callback_inline(call):
   if call.data=="brdcstusrs":
     ak = bot.send_message(call.message.chat.id,text="Send me any Msg to Broadcast",reply_markup=buttons.CancelKey.keyboard)
     bot.register_next_step_handler(ak,brdcstusrs1)
+  if call.data=="lstautomation":
+    try:
+      catgcount = len(AutoPostingcat)
+      markup = types.InlineKeyboardMarkup(row_width=1)
+      AutoPostingcatf = ""
+      if int(catgcount) > 0:
+        AutoPostingcatf+= AutoPostingcat[0]
+      else:
+        AutoPostingcatf+="None"
+      print(AutoPostingcatf)
+      timelencount = len(CurrentTimerolist)
+      currenttimer = ""
+      if int(timelencount) == 0:
+        currenttimer+="Not Set Yet"
+      elif int(timelencount) == 1:
+        currenttimer+= f"At {CurrentTimerolist[0]}"
+      elif int(timelencount) > 1:
+        for u in CurrentTimerolist:
+          currenttimer+= f"\n{u}"
+      listautomation.autopostingbutton(markup,AutoPostingcatf)
+      if int(timelencount) > 1:
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>Choose Timing Catagory\n🗺️ TimeZone : </b><code>Asia/Calcutta</code> \n\n⏲️ <b>Everyday At Following Times</b>\n <i>{currenttimer}</i>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
+      else:
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>Choose Timing Catagory\n🗺️ TimeZone : </b><code>Asia/Calcutta</code> \n\n⏲️ <i>{currenttimer}</i>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
+    except Exception as e:
+      bot.send_message(chat_id=call.message.chat.id,text=e)
+  if (call.data.startswith("['autolist'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      if f"{valueFromCallBack}" == "cat1":
+        timelencount = len(CurrentTimerolist)
+        markup = types.InlineKeyboardMarkup()
+        currenttimer = ""
+        if int(timelencount) > 0:
+          currenttimer+= CurrentTimerolist[0]
+        else:
+          currenttimer+="Not Set Yet"
+        listautomation.autopostingtimings(markup,valueFromCallBack,currenttimer)
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>Update Auto List Posting\n🗺️ TimeZone : </b><code>Asia/Calcutta</code> \n\n⏲️ <i>{currenttimer}</i>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
+      elif f"{valueFromCallBack}" == "cat3":
+        timelencount = len(CurrentTimerolist)
+        markup = types.InlineKeyboardMarkup()
+        currenttimer = ""
+        if int(timelencount) > 0:
+          for y in CurrentTimerolist:
+            currenttimer+= f"<i>\n{y}</i>"
+        else:
+          currenttimer+="Not Set Yet"
+        listautomation.autopostingtimings(markup,valueFromCallBack,currenttimer)
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>Update Auto List Posting\n🗺️ TimeZone : </b><code>Asia/Calcutta</code> \n\n⏲️ <i>{currenttimer}</i>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
+      else:
+        markup = types.InlineKeyboardMarkup()
+        markup.add(listautomation.BacktoListautopost)
+        bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>This Is Not Added Yet</b>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
+    except Exception as e:
+      bot.send_message(chat_id=call.message.chat.id,text=e)
+  if (call.data.startswith("['updatetimings'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      #AutoPostingcat.clear()
+      time.sleep(1)
+      #AutoPostingcat.append(f"{valueFromCallBack}")
+      #print("akhil")
+      User.listpostcatg = f"{valueFromCallBack}"
+      ExampleText = ""
+      if f"{valueFromCallBack}" == "cat1":
+        ExampleText+=f"{listautomation.catApostTimeExmaple}"
+      elif f"{valueFromCallBack}" == "cat2":
+        ExampleText+=f"{listautomation.catBpostTimeExmaple}"
+      else:# f"{valueFromCallBack}" == "cat3":
+        ExampleText+=f"{listautomation.catCpostTimeExmaple}"
+      #else:
+        #ExampleText+="000"
+      #if f"{ExampleText}" == "000":
+      ak = bot.send_message(call.message.chat.id,text=ExampleText,reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
+      bot.register_next_step_handler(ak,updateTimeautolist)
+      #else:
+        #bot.send_message(call.message.chat.id,text="Wrong Click")
+      #  break
+    except Exception as e:
+      bot.send_message(chat_id=call.message.chat.id,text=e)
+  if (call.data.startswith("['resettimngpost'")):
+    try:
+      valueFromCallBack = ast.literal_eval(call.data)[1]
+      AutoPostingcat.clear()
+      CurrentTimerolist.clear()
+      timelencount = len(CurrentTimerolist)
+      r = requests.get('https://' + Config.app + '.herokuapp.com/')
+      markup = types.InlineKeyboardMarkup()
+      currenttimer = ""
+      if int(timelencount) > 0:
+        currenttimer+= CurrentTimerolist[0]
+      else:
+        currenttimer+="Not Set Yet"
+      listautomation.autopostingtimings(markup,valueFromCallBack,currenttimer)
+      bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>Update Auto List Posting</b> \n\n⏲️ <i>{currenttimer}</i>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
+    except Exception as e:
+      bot.send_message(chat_id=call.message.chat.id,text=e)
   if call.data=="clsewndw":
     cid = call.message.chat.id
     mid = call.message.message_id
     bot.delete_message(cid,mid)
+
+
+def updateTimeautolist(m):
+  if f"{m.text}" in cancellist:
+    qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+    bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+    bot.send_message(m.chat.id,text="<b>🤷Operation Cancelled. /start Again</b>",reply_markup=buttons.OrtnCancel.key,parse_mode="HTML")
+  else:
+    if f"{User.listpostcatg}" == "cat1":
+      giventime = m.text
+      Format = "%Y-%m-%d %H:%M:%S"
+      try:
+        FormatedDate = datetime.strptime(giventime,Format)
+        year = int(FormatedDate.strftime("%Y"))
+        month = int(FormatedDate.strftime("%m"))
+        date = int(FormatedDate.strftime("%d"))
+        hours = int(FormatedDate.strftime("%H"))
+        minute = int(FormatedDate.strftime("%M"))
+        seconds = int(FormatedDate.strftime("%S"))
+        present = datetime.now()
+        dateoldornew = datetime(year,month,date,hours,minute,seconds) > present
+        if f"{dateoldornew}" == "True":
+          CurrentTimerolist.clear()
+          AutoPostingcat.clear()
+          time.sleep(3)
+          AutoPostingcat.append(User.listpostcatg)
+          CurrentTimerolist.append(m.text)
+          #qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+          #bot.delete_message(chat_id=m.chat.id,message_id=qk.message_id)
+          bot.reply_to(m,text="<b>New Time Updated</b>",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+          while True:
+            try:
+              giventime = CurrentTimerolist[0]
+              Format = "%Y-%m-%d %H:%M:%S"
+              FormatedDate = datetime.strptime(giventime,Format)
+              year = int(FormatedDate.strftime("%Y"))
+              month = int(FormatedDate.strftime("%m"))
+              date = int(FormatedDate.strftime("%d"))
+              hours = int(FormatedDate.strftime("%H"))
+              minute = int(FormatedDate.strftime("%M"))
+              seconds = int(FormatedDate.strftime("%S"))
+              ist1 = pytz.timezone('Asia/Calcutta')
+              CurrentTime=datetime.now(ist1)
+              year1 = int(CurrentTime.strftime("%Y"))
+              month1 = int(CurrentTime.strftime("%m"))
+              date1 = int(CurrentTime.strftime("%d"))
+              hours1 = int(CurrentTime.strftime("%H"))
+              minute1 = int(CurrentTime.strftime("%M"))
+              seconds1 = int(CurrentTime.strftime("%S"))
+              a = datetime(year1, month1, date1, hours1, minute1, seconds1) 
+              b = datetime(year, month, date, hours, minute, seconds) 
+              difference = b-a
+              seconds = difference.total_seconds()
+              if int(seconds) == 0 :
+                adminid = m.chat.id
+                chnlidforautodltng = sheet1.col_values(2)
+                pstidforautodltng = sheet1.col_values(10)
+                Pass = len(Passed)
+                Fail = len(Failed)
+                vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
+                for man_detail1,man_detail2 in zip(chnlidforautodltng,pstidforautodltng):
+                  time.sleep(1)
+                  dltpostprocess(adminid,vk,man_detail1,man_detail2)
+                DltResultprint(adminid)
+                listmakerid = m.chat.id
+                ListChnl = Config.ListChannel
+                lisType = sheet3.get('B1').first()
+                EntryInOneList = sheet3.get('B10').first()
+                ChrhctrLimit1 = sheet3.get('B14').first()
+                ChrhctrLimit = int(ChrhctrLimit1)
+                sheet1.sort((6, 'des'),range='A1:K999')
+                values_list1 = sheet1.col_values(3)
+                values_list2 = sheet1.col_values(4)
+                values_list3 = sheet1.col_values(5)
+                if f"{lisType}" == "clskUlist":
+                  CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList)
+                elif f"{lisType}" == "clskNlist":
+                  createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+                elif f"{lisType}" == "Stndrdlist":
+                  createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+                elif f"{lisType}" == "Buttonlist":
+                  createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+                else:
+                  bot.send_message(chat_id = m.chat.id,text="List Type is Not Definded")
+                #listposting
+                chnlidforautopstng = sheet1.col_values(2)
+                listmsgidautopstg = sheet1.col_values(8)
+                statsautopstng = sheet1.col_values(10)
+                ap = bot.send_message(adminid,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
+                for i1,i2,i3 in zip(chnlidforautopstng,listmsgidautopstg,statsautopstng):
+                  man_detail1 = i1.strip()
+                  man_detail2 = i2.strip()
+                  man_detail3 = i3.strip()
+                  forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
+                FrwrdResultprint(adminid)
+                AutoPostingcat.clear()
+                CurrentTimerolist.clear()
+                break
+              elif int(seconds) < 0 :
+                bot.send_message(m.chat.id,text="The Task at setted time is happend already")
+                AutoPostingcat.clear()
+                CurrentTimerolist.clear()
+                break
+              else:
+                continue
+            except Exception as e:
+              bot.send_message(m.chat.id,text="Previous Operation Breaked")
+              break
+        else:
+          ak = bot.send_message(m.chat.id,text="Time has been passed. Plz send me new time again")
+          bot.register_next_step_handler(ak,updateTimeautolist)
+      except Exception as e:
+        ak = bot.send_message(m.chat.id,e)
+        bot.register_next_step_handler(ak,updateTimeautolist)
+    elif f"{User.listpostcatg}" == "cat3":
+      giventimes = m.text
+      multitimestring = giventimes.splitlines()
+      test = ""
+      totaltime = len(multitimestring)
+      for i in multitimestring:
+        checktimeformat = isTimeFormat(i)
+        if f"{checktimeformat}" == "True":
+          test+="a"
+        else:
+          bot.send_message(m.chat.id,checktimeformat)
+      try:
+        if len(test) == int(totaltime):
+          arrangedtimings = shorttimeinorder(giventimes)
+          CurrentTimerolist.clear()
+          AutoPostingcat.clear()
+          AutoPostingcat.append(User.listpostcatg)
+          for u in arrangedtimings:
+            CurrentTimerolist.append(u)
+          cat3TimeMinlist.clear()
+          for o in CurrentTimerolist:
+            HM = o[:-3]
+            cat3TimeMinlist.append(HM)
+          timestartmsg = bot.reply_to(m,text=f"<b>New Time Updated</b> {cat3TimeMinlist}",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
+          print(f"{cat3TimeMinlist}")
+          try:
+            while True:
+              if len(AutoPostingcat) == 1:
+                if f"{AutoPostingcat[0]}" == "cat3":
+                  ist1 = pytz.timezone('Asia/Calcutta')
+                  CurrentTime=datetime.now(ist1)
+                  #timesathappen = CurrentTime.strftime('%H:%M:%S')
+                  timesathappen = CurrentTime.strftime('%H:%M')
+                  if timesathappen in cat3TimeMinlist:
+                    time.sleep(15)
+                    adminid = m.chat.id
+                    chnlidforautodltng = sheet1.col_values(2)
+                    pstidforautodltng = sheet1.col_values(10)
+                    Pass = len(Passed)
+                    Fail = len(Failed)
+                    vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
+                    for man_detail1,man_detail2 in zip(chnlidforautodltng,pstidforautodltng):
+                      time.sleep(1)
+                      dltpostprocess(adminid,vk,man_detail1,man_detail2)
+                    DltResultprint(adminid)
+                    time.sleep(15)
+                    listmakerid = m.chat.id
+                    ListChnl = Config.ListChannel
+                    lisType = sheet3.get('B1').first()
+                    EntryInOneList = sheet3.get('B10').first()
+                    ChrhctrLimit1 = sheet3.get('B14').first()
+                    ChrhctrLimit = int(ChrhctrLimit1)
+                    sheet1.sort((6, 'des'),range='A1:K999')
+                    values_list1 = sheet1.col_values(3)
+                    values_list2 = sheet1.col_values(4)
+                    values_list3 = sheet1.col_values(5)
+                    if f"{lisType}" == "clskUlist":
+                      CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList)
+                    elif f"{lisType}" == "clskNlist":
+                      createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+                    elif f"{lisType}" == "Stndrdlist":
+                      createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+                    elif f"{lisType}" == "Buttonlist":
+                      createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+                    else:
+                      bot.send_message(chat_id = m.chat.id,text="List Type is Not Definded")
+                    #listposting
+                    time.sleep(15)
+                    chnlidforautopstng = sheet1.col_values(2)
+                    listmsgidautopstg = sheet1.col_values(8)
+                    statsautopstng = sheet1.col_values(10)
+                    ap = bot.send_message(adminid,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
+                    for i1,i2,i3 in zip(chnlidforautopstng,listmsgidautopstg,statsautopstng):
+                      man_detail1 = i1.strip()
+                      man_detail2 = i2.strip()
+                      man_detail3 = i3.strip()
+                      forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
+                    FrwrdResultprint(adminid)
+                    #time.sleep(60)
+                  else:
+                    #while True:
+                    ist1 = pytz.timezone('Asia/Calcutta')
+                    CurrentTime=datetime.now(ist1)
+                    minute1 = int(CurrentTime.strftime("%M"))
+                    #print(minute1)
+                    #for addu in Config.admins:
+                      #ak = bot.send_message(chat_id = addu,text= f"{minute1}")
+                    if int(minute1)%20 == 0:
+                      r = requests.get('https://' + Config.app + '.herokuapp.com/')
+                      for addu in Config.admins:
+                        ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
+                      time.sleep(60)
+                    else:
+                      time.sleep(40)
+                      continue
+                    #continue
+                else:
+                  break
+              else:
+                break
+          except Exception as e:
+            print(e)
+      except Exception as e:
+        print(e)
+      #else:
+        #bot.send_message(m.chat.id,"Operation Breaked")
+    else:
+      bot.send_message(m.chat.id,text="NotThis Method")
+      
+def shorttimeinorder(giventimes):
+  try:
+    SecDiff = []
+    TimeDict = {}
+    arrangedtimings = []
+    getonestring = giventimes.splitlines()
+    for i in getonestring:
+      date_format_str = '%H:%M:%S'
+      time1 = '00:00:00'
+      start = datetime.strptime(time1, date_format_str)
+      time2 = i
+      end =   datetime.strptime(time2, date_format_str)
+      # Get the interval between two datetimes as timedelta object
+      diff = end - start
+      # Get the interval in milliseconds
+      diff_in_milli_secs = diff.total_seconds()
+      #print('Difference between two datetimes in milli seconds:',diff_in_milli_secs)
+      SecDiff.append(int(diff_in_milli_secs))
+      TimeDict[int(diff_in_milli_secs)] = i
+    SecDiff.sort()
+    for i in SecDiff:
+      ak = TimeDict[i]
+      arrangedtimings.append(ak)
+    return arrangedtimings
+  except Exception as e:
+    return e
+
+
+def isTimeFormat(i):
+  try:
+    print(i)
+    try:
+      timesplit = i.split(":")
+      hr = timesplit[0]
+      mt = timesplit[1]
+      sd = timesplit[2]
+      if 0 <= int(hr) < 24:
+        if 0 <= int(mt) < 60:
+          if 0 <= int(sd) < 60:
+            return True
+          else:
+            return  f"In {i} Seconds Always should Be From 00 to 59"
+        else:
+          return  f"In {i} Minute Always should Be From 00 to 59"
+      else:
+        return  f"In {i} Hours Always should Be From 00 to 23"
+    except:
+      return "Plz Time Format Should in 24-Hrs Format Like HH:MM:SS"
+  except Exception as e:
+    return e
+
+def createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl):
+  header = sheet3.get('B4').first()
+  footer = sheet3.get('B5').first()
+  emoji = sheet3.get('B6').first()
+  contxt = ""
+  for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
+    Name = i1.strip()
+    Uname = i2.strip()
+    Link = i3.strip()
+    list_emoji = emojis.get(f'{Name}')
+    Name4 = demoji.replace(Name, "")
+    emoji2add=""
+    emoji2add2=""
+    Name5=""
+    list_emoji2 = list(Config.EmojiText)
+    wordcount = emojis.count(Config.EmojiText)
+    n2 = random.randint(1,int(wordcount))
+    emoji2add2+="{}".format(list(list_emoji2)[n2])
+    try:
+      list_emoji1 = list(list_emoji)
+      emoji2add+="{}".format(list_emoji1[0])
+      Name5+= "{}".format(Name4)
+    except:
+      try:
+        n = random.randint(1,int(wordcount))
+        emoji2add+="{}".format(list(list_emoji2)[n])
+        Name5+= "{}".format(Name4)
+      except Exception as e:
+        print(e)
+        emoji2add+="🚹"
+        Name5+= "{}".format(Name4)
+    if len(f"{Name5}") >= ChrhctrLimit:
+      Name1 = Name5[0:ChrhctrLimit]
+      contxt+=f"\n{emoji2add} {Name1} {emoji2add2} = {Link}"
+    else:
+      contxt+=f"\n{emoji2add} {Name5} {emoji2add2} = {Link}"
+  lines = contxt.split("\n")
+  non_empty_lines = [line for line in lines if line.strip() != ""]
+  finallines = ""
+  for line in non_empty_lines:
+    finallines += line + "\n"
+  spliallline = finallines.splitlines()
+  nmbrline = len(spliallline)
+  Linetosplit = int(EntryInOneList)
+  totalpara1 = nmbrline/Linetosplit
+  totalpara = round(totalpara1)
+  remainder = nmbrline%Linetosplit
+  ListPstId = []
+  fg = bot.send_message(chat_id = listmakerid,text="List Creating...buttonlist")
+  for x in range(int(totalpara)):
+    fxdbtn = sheet3.get('B3').first()
+    keyboard = types.InlineKeyboardMarkup()
+    dk =""
+    if int(x + 1)== int(totalpara):
+      if int(remainder*2) >= Linetosplit:
+        new_l1=spliallline[-int(remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+      else:
+        new_l1=spliallline[-int(Linetosplit+remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+    else:
+      for y in range(Linetosplit):
+        new_l = spliallline[(x*Linetosplit)+y]
+        dk+=f"\n{new_l}"
+    enblwebpageveiw = sheet3.get('B9').first()
+    lines1 = dk.split("\n")
+    non_empty_lines1 = [line for line in lines1 if line.strip() != ""]
+    ok = ""
+    for line in non_empty_lines1:
+      ok += line + "\n"
+    everyline = ok.splitlines()
+    for u in everyline:
+      c_detail, c_link = (u.split("="))
+      channel_detail = c_detail.strip()
+      channel_link = c_link.strip()
+      btn1 = types.InlineKeyboardButton(channel_detail, url=channel_link)
+      keyboard.add(btn1)
+      #sk+=f"\n{channel_detail}\n<a href='{channel_link}'>{emoji}Join Now{emoji}</a>\n"
+      #sk+=f"\n{footer}"
+    if f"{fxdbtn}" == "Yes":
+      #keyboard = types.InlineKeyboardMarkup()
+      adfxdbtn(keyboard)
+      picyoN = sheet3.get('B11').first()
+      if f"{picyoN}" == "Yes":
+        picValue = sheet3.get('B8').first()
+        CaptyoN = sheet3.get('B12').first()
+        if f"{CaptyoN}" == "Yes":
+          captValue = sheet3.get('B7').first()
+          jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+        else:
+          jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+      else:
+        captValue = sheet3.get('B7').first()
+        if f"{enblwebpageveiw}" == "Yes":
+          jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+        else:
+          jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+    else:
+      #print("ak")
+      picyoN = sheet3.get('B11').first()
+      #print(picyoN)
+      if f"{picyoN}" == "Yes":
+        picValue = sheet3.get('B8').first()
+        CaptyoN = sheet3.get('B12').first()
+        if f"{CaptyoN}" == "Yes":
+          captValue = sheet3.get('B7').first()
+          #print("1")
+          jk = bot.send_photo(chat_id=ListChnl,photo=picValue,caption=captValue,parse_mode="HTML",reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+        else:
+          #print("2")
+          jk = bot.send_photo(chat_id=ListChnl,photo=picValue,reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+      else:
+        captValue = sheet3.get('B7').first()
+        if f"{enblwebpageveiw}" == "Yes":
+          jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+        else:
+          jk = bot.send_message(chat_id=ListChnl,text=captValue,parse_mode="HTML",disable_web_page_preview=True,reply_markup=keyboard)
+          msgid = jk.message_id
+          ListPstId.append(msgid)
+  linkforlist=""
+  cnt=0
+  for i in ListPstId:
+    cnt+=1
+    linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
+  bot.edit_message_text(chat_id = listmakerid,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
+  TotalList = len(ListPstId)
+  for q in range(TotalList):
+    if remainder > 0:
+      if int(q+1) == int(TotalList):
+        if int(remainder*2) >= Linetosplit:
+          for y in range(remainder):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+        else:
+          for y in range(int(remainder+Linetosplit)):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+      else:
+        for y in range(Linetosplit):
+          time.sleep(2)
+          sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+    else:
+      for y in range(Linetosplit):
+        time.sleep(2)
+        sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+  bot.edit_message_text(chat_id = listmakerid,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
+
+def createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl):
+  header = sheet3.get('B4').first()
+  footer = sheet3.get('B5').first()
+  emoji = sheet3.get('B6').first()
+  contxt = ""
+  for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
+    Name = i1.strip()
+    Uname = i2.strip()
+    Link = i3.strip()
+    if len(f"{Name}") >= ChrhctrLimit:
+      Name1 = Name[0:ChrhctrLimit]
+      contxt+=f"\n{Name1} = {Link}"
+    else:
+      contxt+=f"\n{Name} = {Link}"
+  fxdbtn = sheet3.get('B3').first()
+  if f"{fxdbtn}" == "Yes":
+    keyboard = types.InlineKeyboardMarkup()
+    adfxdbtn(keyboard)
+  else:
+    print("..")
+  lines = contxt.split("\n")
+  non_empty_lines = [line for line in lines if line.strip() != ""]
+  finallines = ""
+  for line in non_empty_lines:
+    finallines += line + "\n"
+  spliallline = finallines.splitlines()
+  nmbrline = len(spliallline)
+  Linetosplit = int(EntryInOneList)
+  totalpara1 = nmbrline/Linetosplit
+  totalpara = round(totalpara1)
+  remainder = nmbrline%Linetosplit
+  ListPstId = []
+  fg = bot.send_message(chat_id=listmakerid,text="List Creating...standard List")
+  for x in range(int(totalpara)):
+    dk =""
+    if int(x + 1)== int(totalpara):
+      if int(remainder*2) >= Linetosplit:
+        new_l1=spliallline[-int(remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+      else:
+        new_l1=spliallline[-int(Linetosplit+remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+    else:
+      for y in range(Linetosplit):
+        new_l = spliallline[(x*Linetosplit)+y]
+        dk+=f"\n{new_l}"
+    enblwebpageveiw = sheet3.get('B9').first()
+    sk = ""
+    sk+=header + "\n"
+    lines1 = dk.split("\n")
+    non_empty_lines1 = [line for line in lines1 if line.strip() != ""]
+    ok = ""
+    for line in non_empty_lines1:
+      ok += line + "\n"
+    everyline = ok.splitlines()
+    for u in everyline:
+      c_detail, c_link = (u.split("="))
+      channel_detail = c_detail.strip()
+      channel_link = c_link.strip()
+      sk+=f"\n{channel_detail}\n<a href='{channel_link}'>{emoji}Join Now{emoji}</a>\n"
+    sk+=f"\n{footer}"
+    if f"{enblwebpageveiw}" == "Yes":
+      if f"{fxdbtn}" == "Yes":
+        jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML",reply_markup=keyboard)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+      else:
+        jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML")
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+    else:
+      if f"{fxdbtn}" == "Yes":
+        jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+      else:
+        jk = bot.send_message(chat_id=ListChnl,text=sk,parse_mode="HTML",disable_web_page_preview=True)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+  linkforlist=""
+  cnt=0
+  for i in ListPstId:
+    cnt+=1
+    linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
+  bot.edit_message_text(chat_id=listmakerid,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
+  TotalList = len(ListPstId)
+  for q in range(TotalList):
+    if remainder > 0:
+      if int(q+1) == int(TotalList):
+        if int(remainder*2) >= Linetosplit:
+          for y in range(remainder):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+        else:
+          for y in range(int(remainder+Linetosplit)):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+      else:
+        for y in range(Linetosplit):
+          time.sleep(2)
+          sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+    else:
+      for y in range(Linetosplit):
+        time.sleep(2)
+        sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+  bot.edit_message_text(chat_id=listmakerid,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
+
+def createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl):
+  header = sheet3.get('B4').first()
+  footer = sheet3.get('B5').first()
+  emoji = sheet3.get('B6').first()
+  contxt = ""
+  for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
+    Name = i1.strip()
+    Uname = i2.strip()
+    Link = i3.strip()
+    list_emoji = emojis.get(f'{Name}')
+    Name4 = demoji.replace(Name, "")
+    Name5=""
+    try:
+      list_emoji1 = list(list_emoji)
+      Name5+= "{}{}".format(list_emoji1[0],Name4)
+    except:
+      list_emoji1 = list(Config.EmojiText)
+      wordcount = emojis.count(Config.EmojiText)
+      n = random.randint(1,int(wordcount-1))
+      try:
+        Name5+= "{}{}".format(list(list_emoji1)[n],Name4)
+      except:
+        Name5+= "🔥{}".format(Name4)
+    if len(f"{Name5}") >= ChrhctrLimit:
+      Name1 = Name5[0:ChrhctrLimit]
+      contxt+=f"\n{emoji} <a href='{Link}'>{Name1}</a>"
+    else:
+      contxt+=f"\n{emoji} <a href='{Link}'>{Name5}</a>"
+  fxdbtn = sheet3.get('B3').first()
+  if f"{fxdbtn}" == "Yes":
+    keyboard = types.InlineKeyboardMarkup()
+    adfxdbtn(keyboard)
+  else:
+    print("..")
+  lines = contxt.split("\n")
+  non_empty_lines = [line for line in lines if line.strip() != ""]
+  finallines = ""
+  for line in non_empty_lines:
+    finallines += line + "\n"
+  spliallline = finallines.splitlines()
+  nmbrline = len(spliallline)
+  Linetosplit = int(EntryInOneList)
+  totalpara1 = nmbrline/Linetosplit
+  totalpara = round(totalpara1)
+  remainder = nmbrline%Linetosplit
+  ListPstId = []
+  fg = bot.send_message(chat_id=listmakerid,text="List Creating...Namelist")
+  for x in range(int(totalpara)):
+    dk =""
+    dk+=header + "\n"
+    if int(x + 1)== int(totalpara):
+      if int(remainder*2) >= Linetosplit:
+        new_l1=spliallline[-int(remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+      else:
+        new_l1=spliallline[-int(Linetosplit+remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+    else:
+      for y in range(Linetosplit):
+        new_l = spliallline[(x*Linetosplit)+y]
+        dk+=f"\n{new_l}"
+    dk+=f"\n\n{footer}"
+    enblwebpageveiw = sheet3.get('B9').first()
+    if f"{enblwebpageveiw}" == "Yes":
+      if f"{fxdbtn}" == "Yes":
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+      else:
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML")
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+    else:
+      if f"{fxdbtn}" == "Yes":
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+      else:
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",disable_web_page_preview=True)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+  linkforlist=""
+  cnt=0
+  for i in ListPstId:
+    cnt+=1
+    linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
+  bot.edit_message_text(chat_id=listmakerid,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
+  TotalList = len(ListPstId)
+  for q in range(TotalList):
+    if remainder > 0:
+      if int(q+1) == int(TotalList):
+        if int(remainder*2) >= Linetosplit:
+          for y in range(remainder):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+        else:
+          for y in range(int(remainder+Linetosplit)):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+      else:
+        for y in range(Linetosplit):
+          time.sleep(2)
+          sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+    else:
+      for y in range(Linetosplit):
+        time.sleep(2)
+        sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+  bot.edit_message_text(chat_id=listmakerid,text=f"Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
+
+def CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList):
+  header = sheet3.get('B4').first()
+  footer = sheet3.get('B5').first()
+  emoji = sheet3.get('B6').first()
+  contxt = ""
+  for i1,i2,i3 in zip(values_list1,values_list2,values_list3):
+    Name = i1.strip()
+    Uname = i2.strip()
+    Link = i3.strip()
+    if f"{Uname}" == "None":
+      emojis_list_de= re.findall(r'(:[!_\-\w]+:)', Name)
+      list_emoji= [emoji.emojize(x) for x in emojis_list_de]
+      Name2 = demoji.replace(Name, "")
+      Name3 = Name2.replace(" ", "")
+      Name5 = Name3.lower()
+      #Name5 = "{}{}".format(list_emoji[0],Name4)
+      if len(f"{Name5}") >= ChrhctrLimit:
+        Name1 = Name5[0:ChrhctrLimit]
+        contxt+=f"\n{emoji} <a href='{Link}'>@{Name1}</a>"
+      else:
+        contxt+=f"\n{emoji} <a href='{Link}'>@{Name5}</a>"
+    else:
+      contxt+=f"\n{emoji} @{Uname}"
+    fxdbtn = sheet3.get('B3').first()
+    if f"{fxdbtn}" == "Yes":
+      keyboard = types.InlineKeyboardMarkup()
+      adfxdbtn(keyboard)
+    else:
+      print("..")
+  lines = contxt.split("\n")
+  non_empty_lines = [line for line in lines if line.strip() != ""]
+  finallines = ""
+  for line in non_empty_lines:
+    finallines += line + "\n"
+  spliallline = finallines.splitlines()
+  nmbrline = len(spliallline)
+  Linetosplit = int(EntryInOneList)
+  totalpara1 = nmbrline/Linetosplit
+  totalpara = round(totalpara1)
+  remainder = nmbrline%Linetosplit
+  ListPstId = []
+  fg = bot.send_message(listmakerid,text="List Creating...")
+  for x in range(int(totalpara)):
+    dk =""
+    dk+=header + "\n"
+    if int(x + 1)== int(totalpara):
+      if int(remainder*2) >= Linetosplit:
+        new_l1=spliallline[-int(remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+      else:
+        new_l1=spliallline[-int(Linetosplit+remainder):]
+        for new_l in new_l1:
+          dk+=f"\n{new_l}"
+    else:
+      for y in range(Linetosplit):
+        new_l = spliallline[(x*Linetosplit)+y]
+        dk+=f"\n{new_l}"
+    dk+=f"\n\n{footer}"
+    enblwebpageveiw = sheet3.get('B9').first()
+    if f"{enblwebpageveiw}" == "Yes":
+      if f"{fxdbtn}" == "Yes":
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+      else:
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML")
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+    else:
+      if f"{fxdbtn}" == "Yes":
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",reply_markup=keyboard,disable_web_page_preview=True)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+      else:
+        jk = bot.send_message(chat_id=ListChnl,text=dk,parse_mode="HTML",disable_web_page_preview=True)
+        msgid = jk.message_id
+        ListPstId.append(msgid)
+  linkforlist=""
+  cnt=0
+  for i in ListPstId:
+    cnt+=1
+    linkforlist+=f"\n<a href='https://t.me/c/{Config.ListChannel1}/{i}'>List {cnt}</a>"
+  bot.edit_message_text(chat_id = listmakerid,text=f"Lists Created ✅{linkforlist}\nNow Updating ListId To DataBase",message_id=fg.message_id,parse_mode="HTML")
+  TotalList = len(ListPstId)
+  for q in range(TotalList):
+    if remainder > 0:
+      if int(q+1) == int(TotalList):
+        if int(remainder*2) >= Linetosplit:
+          for y in range(remainder):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+        else:
+          for y in range(int(remainder+Linetosplit)):
+            time.sleep(2)
+            sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[-1])
+      else:
+        for y in range(Linetosplit):
+          time.sleep(2)
+          sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+    else:
+      for y in range(Linetosplit):
+        time.sleep(2)
+        sheet1.update(f"H{int((q*Linetosplit)+y+1)}",ListPstId[q])
+  bot.edit_message_text(chat_id = listmakerid,text=f"UName Lists Created ✅{linkforlist}\nListId Updated ✅\nNow u can forward to channels ...",message_id=fg.message_id,parse_mode="HTML")
     
+def adfxdbtn(keyboard):
+  fxdbtndata = sheet3.get('B2').first()
+  pakshi = f"{fxdbtndata}"
+  tag_split = pakshi.splitlines()
+  for each_cn in tag_split:
+    new_cn = each_cn.strip()
+    splitter = " | "
+    if splitter in each_cn:
+      manybtn = (new_cn.split("|"))
+      row = []
+      for i in manybtn:
+        c_detail, c_link = (i.split("="))
+        channel_detail = c_detail.strip()
+        channel_link = c_link.strip()
+        row.append(types.InlineKeyboardButton(text=channel_detail, url=channel_link))
+      keyboard.row(*row)
+    else:
+      c_detail, c_link = (new_cn.split("="))
+      channel_detail = c_detail.strip()
+      channel_link = c_link.strip()
+      btn = types.InlineKeyboardButton(text=channel_detail,url = channel_link)
+      keyboard.add(btn)
+  return keyboard
+
 def brdcstusrs1(m):
   if f"{m.text}" in cancellist:
       qk = bot.send_message(m.chat.id,text="🐛",reply_markup=buttons.RmvKeyBrd.key,parse_mode="HTML")
@@ -1530,92 +1793,142 @@ def userdtl(m):
     error = f"{e}".split("Description: ")[1]
     bot.send_message(m.chat.id,"<i>error</i>",parse_mode="HTML")
 
+def dltpostprocess(adminid,vk,man_detail1,man_detail2):
+  if int(man_detail2) >= 1:
+    try:
+      bot.delete_message(man_detail1,man_detail2)
+      cells = sheet1.find(man_detail1)
+      row = cells.row
+      sheet1.update(f"I{row}","Deleted")
+      sheet1.update(f"J{row}","0")
+      Passed.append("🕧")
+      Pass = len(Passed)
+      Fail = len(Failed)
+      time.sleep(2)
+      bot.edit_message_text(chat_id = adminid,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
+    except Exception as e:
+      Failed.append("🕧")
+      Pass = len(Passed)
+      Fail = len(Failed)
+      FailedID.append(f"{man_detail1}")
+      time.sleep(2)
+      bot.edit_message_text(chat_id = adminid,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
+      bot.send_message(adminid,f"{man_detail1} Failed & list id {man_detail2} and error is {e}")
+  elif int(man_detail2) == 0:
+    Failed.append("🕧")
+    Pass = len(Passed)
+    Fail = len(Failed)
+    bot.edit_message_text(chat_id = adminid,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
+    AlreadyDoneID.append(f"{man_detail1}")
+  else:
+    Failed.append("🕧")
+    Pass = len(Passed)
+    Fail = len(Failed)
+    FailedID.append(f"{man_detail1}")
+    time.sleep(2)
+    bot.edit_message_text(chat_id = adminid,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
+    bot.send_message(adminid,text=f"<b>Failed Bcz  Current Post Id is Status is {man_detail2}</b>",parse_mode="HTML")
+
+def DltResultprint(adminid):
+  Passed.clear()
+  Failed.clear()
+  faildlistt=""
+  AlrefyDoneList=""
+  for y in AlreadyDoneID:
+    AlrefyDoneList+=f"\n{y}"
+  for y in FailedID:
+    faildlistt+=f"\n{y}"
+  bot.send_message(adminid,text=f"<b>List Of Already Deleted Channels</b> \n\n <code>{AlrefyDoneList}</code>",parse_mode="HTML")
+  bot.send_message(adminid,text=f"<b>List Of Failed Channels</b> \n\n <code>{faildlistt}</code>",parse_mode="HTML")
+  AlreadyDoneID.clear()
+  FailedID.clear()
+
+#============================
 def dltonepst2(m):
+  adminid = m.chat.id
   chnlids = m.text
+  Pass = len(Passed)
+  Fail = len(Failed)
   allchannellist = chnlids.splitlines()
-  Pass = 0
-  Fail = 0
-  AlredyDelete=""
-  failedlist=""
-  vk = bot.send_message(m.chat.id,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
+  vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
   for i1 in allchannellist:
     time.sleep(1)
     man_detail1 = i1.strip()
     cells = sheet1.find(man_detail1)
     row = cells.row
     man_detail2 = sheet1.get(f"J{row}").first()
-    if int(man_detail2) >= 1:
-      try:
-        bot.delete_message(man_detail1,man_detail2)
-        cells = sheet1.find(man_detail1)
-        row = cells.row
-        sheet1.update(f"I{row}","Deleted")
-        sheet1.update(f"J{row}","0")
-        Pass+=1
-        bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        time.sleep(2)
-      except Exception as e:
-        Fail+=1
-        failedlist+=f"\n{man_detail1}"
-        time.sleep(2)
-        bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-        bot.send_message(m.chat.id,f"{man_detail1} Failed & list id {man_detail2} and error is {e}")
-    elif int(man_detail2) == 0:
-      Fail+=1
-      bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-      AlredyDelete+=f"\n{man_detail1}"
-    else:
-      Fail+=1
-      bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListdeleteSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-      failedlist+=f"\n{man_detail1}"
-      time.sleep(2)
-      bot.send_message(m.chat.id,text=f"<b>Failed Bcz  Current Post Id is Status is {man_detail2}</b>",parse_mode="HTML")
-  bot.send_message(m.chat.id,text=f"<b>List Of Already Deleted Channels</b> \n\n <code>{AlredyDelete}</code>",parse_mode="HTML")
-  bot.send_message(m.chat.id,text=f"<b>List Of Failed Channels</b> \n\n <code>{failedlist}</code>",parse_mode="HTML")
+    dltpostprocess(adminid,vk,man_detail1,man_detail2)
+  DltResultprint(adminid)
   
 def frwrdpstfew1(m):
+  adminid = m.chat.id
   chnlids = m.text
+  Pass = len(Passed)
+  Fail = len(Failed)
   allchannellist = chnlids.splitlines()
-  Pass = 0
-  Fail = 0
-  AlredyPost=""
-  failedlist=""
-  vk = bot.send_message(m.chat.id,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
+  ap = bot.send_message(m.chat.id,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
   for man_detail1 in allchannellist:
     cells = sheet1.find(man_detail1)
     row = cells.row
     man_detail2 = sheet1.get(f"H{row}").first()
     man_detail3 = sheet1.get(f"J{row}").first()
-    if int(man_detail3) == 0:
-      try:
-        aa = bot.forward_message(chat_id = f"{man_detail1}", from_chat_id =Config.ListChannel, message_id = man_detail2)
-        cells = sheet1.find(man_detail1)
-        row = cells.row
-        sheet1.update(f"I{row}","Shared")
-        sheet1.update(f"J{row}",f"{aa.message_id}")
-        time.sleep(1)
-        Pass+=1
-        time.sleep(2)
-        bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-      except Exception as e:
-        Fail+=1
-        time.sleep(2)
-        failedlist+=f"\n{man_detail1}"
-        bot.send_message(m.chat.id,text=f"\n{man_detail1} Failed with error {e}")
-        bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-    elif int(man_detail3) >= 1:
-      Fail+=1
-      AlredyPost+=f"\n{man_detail1}"
-      bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-    else:
-      Fail+=1
-      time.sleep(2)
-      failedlist+=f"{man_detail1}"
-      bot.edit_message_text(chat_id = m.chat.id,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=vk.message_id,parse_mode="HTML")
-      bot.send_message(m.chat.id,text=f"bcz previous status of {man_detail1} is {man_detail3}")
-  bot.send_message(m.chat.id,text=f"<b>List Of Already Posted Channels</b> \n\n <code>{AlredyPost}</code>",parse_mode="HTML")
-  bot.send_message(m.chat.id,text=f"<b>List Of Failed Channels</b> \n\n <code>{failedlist}</code>",parse_mode="HTML")
+    forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
+  FrwrdResultprint(adminid)
   
+def FrwrdResultprint(adminid):
+  Passed.clear()
+  Failed.clear()
+  faildlistt=""
+  AlrefyDoneList=""
+  for y in AlreadyDoneID:
+    AlrefyDoneList+=f"\n{y}"
+  for y in FailedID:
+    faildlistt+=f"\n{y}"
+  bot.send_message(adminid,text=f"<b>List Of Already Posted Channels</b> \n\n <code>{AlrefyDoneList}</code>",parse_mode="HTML")
+  bot.send_message(adminid,text=f"<b>List Of Failed Channels</b> \n\n <code>{faildlistt}</code>",parse_mode="HTML")
+  AlreadyDoneID.clear()
+  FailedID.clear()
+
+def forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap):
+  if int(man_detail3) == 0:
+    try:
+      aa = bot.forward_message(chat_id = f"{man_detail1}", from_chat_id =Config.ListChannel, message_id = man_detail2)
+      cells = sheet1.find(man_detail1)
+      row = cells.row
+      sheet1.update(f"I{row}","Shared")
+      sheet1.update(f"J{row}",f"{aa.message_id}")
+      time.sleep(1)
+      Passed.append("🕧")
+      Pass = len(Passed)
+      Fail = len(Failed)
+      time.sleep(2)
+      bot.edit_message_text(chat_id = adminid,text = normaltext.ListForwardSucess.format("⏳","⏳"),message_id=ap.message_id,parse_mode="HTML")
+      bot.edit_message_text(chat_id = adminid,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=ap.message_id,parse_mode="HTML")
+    except Exception as e:
+      Failed.append("🕧")
+      Pass = len(Passed)
+      Fail = len(Failed)
+      time.sleep(2)
+      FailedID.append(f"{man_detail1}")
+      #failedlist+=f"\n{man_detail1}"
+      bot.send_message(chat_id = adminid,text=f"\n{man_detail1} Failed with error {e}")
+      bot.edit_message_text(chat_id = adminid,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=ap.message_id,parse_mode="HTML")
+  elif int(man_detail3) >= 1:
+    Failed.append("🕧")
+    Pass = len(Passed)
+    Fail = len(Failed)
+    AlreadyDoneID.append(f"{man_detail1}")
+    bot.edit_message_text(chat_id = adminid,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=ap.message_id,parse_mode="HTML")
+  else:
+    Failed.append("🕧")
+    Pass = len(Passed)
+    Fail = len(Failed)
+    time.sleep(2)
+    FailedID.append(f"{man_detail1}")
+    bot.edit_message_text(chat_id = adminid,text = normaltext.ListForwardSucess.format(Pass,Fail),message_id=ap.message_id,parse_mode="HTML")
+    bot.send_message(chat_id = adminid,text=f"bcz previous status of {man_detail1} is {man_detail3}")
+
+
 def updthdr(m):
   try:
     ok = bot.send_message(m.chat.id,text=m.text,parse_mode="HTML",disable_web_page_preview=True)
