@@ -641,16 +641,19 @@ def callback_inline(call):
     m = bot.send_message(call.message.chat.id,text="<b>Send me Channels Ids .</b>",parse_mode="HTML")
     bot.register_next_step_handler(m,dltonepst2)
   if call.data=="dltpstall":
-    adminid = call.message.chat.id
-    values_list3 = sheet1.col_values(2)
-    values_list2 = sheet1.col_values(10)
-    Pass = len(Passed)
-    Fail = len(Failed)
-    vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
-    for man_detail1,man_detail2 in zip(values_list3,values_list2):
-      time.sleep(1)
-      dltpostprocess(adminid,vk,man_detail1,man_detail2)
-    DltResultprint(adminid)
+    try:
+      adminid = call.message.chat.id
+      values_list3 = sheet1.col_values(2)
+      values_list2 = sheet1.col_values(10)
+      Pass = len(Passed)
+      Fail = len(Failed)
+      vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
+      for man_detail1,man_detail2 in zip(values_list3,values_list2):
+        time.sleep(1)
+        dltpostprocess(adminid,vk,man_detail1,man_detail2)
+      DltResultprint(adminid)
+    except Exception as e:
+      bot.send_message(call.message.chat.id,text=e)
   if call.data=="frwrdpstfew":
     m = bot.send_message(call.message.chat.id,text="<b>Send me Channel Ids.</b>",parse_mode="HTML")
     bot.register_next_step_handler(m,frwrdpstfew1)
