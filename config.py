@@ -5,7 +5,7 @@ class Config:
     sheetA = "channels"
     sheetB = "users"
     sheetC = "fixedText"
-    app = "adultpromov4"
+    app = "adultpromov5"
     admins = [608824855]
     ListChannel1 = "1162945091"
     ListChannel = "-100" + f"{ListChannel1}"
