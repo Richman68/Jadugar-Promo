@@ -1,6 +1,6 @@
 import os
 class Config:
-    BOT_TOKEN = "5467104571:AAHL7svPV3DjFJaRSs6qaLwy-NGfhCsEFOs"
+    BOT_TOKEN = "1832877215:AAFQ78Ntw83koaYsfKubzeNPwYms_hyFuN0"
     sheetname = "Huntpromosheet"
     sheetA = "channels"
     sheetB = "users"
