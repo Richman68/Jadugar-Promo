@@ -568,7 +568,7 @@ def callback_inline(call):
       else:
         bot.send_message(chat_id = call.message.chat.id,text="List Type is Not Definded")
     except Exception as e:
-      bot.send_message(chat_id = call.message.chat.id,e)
+      bot.send_message(chat_id = call.message.chat.id,text = e)
   if call.data=="setblwbtns":
     fxdbtn = sheet3.get('B3').first()
     if f"{fxdbtn}" == "No":
