@@ -826,10 +826,75 @@ def callback_inline(call):
       bot.edit_message_text(chat_id = call.message.chat.id,text=f"<b>Update Auto List Posting</b> \n\n⏲️ <i>{currenttimer}</i>",message_id=call.message.message_id,parse_mode="HTML",reply_markup=markup)
     except Exception as e:
       bot.send_message(chat_id=call.message.chat.id,text=e)
+  if call.data=="adchnlmanual":
+    msgtogetid = bot.send_message(chat_id=call.message.chat.id,text="send channel all channel ids to add manually")
+    bot.register_next_step_handler(msgtogetid,AddChannelManually)
   if call.data=="clsewndw":
     cid = call.message.chat.id
     mid = call.message.message_id
     bot.delete_message(cid,mid)
+
+def AddChannelManually(m):
+  try:
+    ChannelIds = m.text.split("\n")
+    for i in ChannelIds:
+      FintorNot = sheet1.find(f"{i}")
+      if FintorNot == None:
+        chatadmins = bot.get_chat_administrators(i)
+        Chat_IdAdmin = ""
+        for admins in chatadmins:
+          if admins.can_promote_members == None or admins.can_promote_members == True:
+            Chat_IdAdmin+= str(admins.user.id)
+            break
+          else:
+            pass
+        chatinfo = bot.get_chat(i)
+        Chat_Id = chatinfo.id
+        Title = chatinfo.title
+        UserName = chatinfo.username
+        Invite_Link = chatinfo.invite_link
+        ak = client.open(Config.sheetname)
+        try:
+          sheetxx = ak.worksheet(f"{Chat_IdAdmin}")
+        except:
+          worksheet = ak.add_worksheet(title=f"{Chat_IdAdmin}", rows="21", cols="5")
+          sheetxx = ak.worksheet(f"{Chat_IdAdmin}")
+        max = "=MAX(A1:A20)"
+        sheetxx.update_cell(21,1, max)
+        h = sheetxx.get('A21').first()
+        h1 = int(h) + 1
+        sheetxx.update_cell(int(h1),1 ,f"{h1}")
+        sheetxx.update_cell(int(h1),2 ,f"{Chat_Id}")
+        time.sleep(5)
+        sheetxx.update_cell(int(h1),3 ,f"{Title}")
+        sheetxx.update_cell(int(h1),4 ,"⛔")
+        sheetxx.update_cell(int(h1),5 ,f"akh{h1}")
+        j = sheet1.get('A1000').first()
+        j1 = int(j) + 1
+        time.sleep(5)
+        sheet1.update_cell(int(j1),1 ,f"{j1}")
+        sheet1.update_cell(int(j1),2 ,f"{Chat_Id}")
+        sheet1.update_cell(int(j1),3 ,f"{Title}")
+        time.sleep(5)
+        sheet1.update_cell(int(j1),4 ,f"{UserName}")
+        sheet1.update_cell(int(j1),5 ,f"{Invite_Link}")
+        sheet1.update_cell(int(j1),6 ,f"{UserName}")
+        time.sleep(5)
+        sheet1.update_cell(int(j1),7 ,f"{Chat_IdAdmin}")
+        sheet1.update_cell(int(j1),8 ,"0")
+        sheet1.update_cell(int(j1),9 ,"Deleted")
+        sheet1.update_cell(int(j1),10 ,"0")
+        Texttt = f'''Id = {Chat_Id}
+        Name = {Title}
+        UserName = {UserName}
+        Link = {Invite_Link}
+        Chat_IdAdmin = {Chat_IdAdmin}
+        '''
+        bot.send_message(m.chat.id,f"Xhannel Added Successfully \n{Chat_Id}")
+      else:
+        bot.send_message(m.chat.id,f"Channel {i} already in DATABASE")
+  except Exception as e:
+    bot.send_message(m.chat.id,e)
 
 
 def updateTimeautolist(m):
