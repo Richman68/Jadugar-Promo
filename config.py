@@ -1,15 +1,15 @@
 import os
 class Config:
     BOT_TOKEN = "5465568043:AAGkbNSR7rdchN9hM_QuwUdykoflFltnOmY"
-    sheetname = "adultpromotionV2"
+    sheetname = "Huntpromosheet"
     sheetA = "channels"
     sheetB = "users"
     sheetC = "fixedText"
     app = "huntingpromo"
-    admins = [608824855,699412278]
-    ListChannel1 = "1162945091"
+    admins = [608824855,1023650988]
+    ListChannel1 = "1459045723"
     ListChannel = "-100" + f"{ListChannel1}"
-    AdminUsername = "@officialmanageradmin"
-    botUsername = "WorldAdultPromotionBot"
-    sponcergroup = "-100" + "1161066976"
+    AdminUsername = "@noxman56"
+    botUsername = "Huntingpromotionbot"
+    sponcergroup = "-100" + "1763423298"
     EmojiText="👻😻🦊🐅🐱🦁🐈🐆🦁🍎🥝🍏🍒🍑🍐🍓🍌🍑🥕🍏🌽🥑🥚🍟🥙🍕🌯🥖"
