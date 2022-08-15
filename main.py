@@ -546,26 +546,29 @@ def callback_inline(call):
     mid = call.message.message_id
     bot.edit_message_text(chat_id = call.message.chat.id,text="🗑️ List Delete Options",message_id=call.message.message_id,parse_mode="HTML",reply_markup=buttons.DltListopt.key)
   if call.data=="createlist":
-    listmakerid = call.message.chat.id
-    ListChnl = Config.ListChannel
-    lisType = sheet3.get('B1').first()
-    EntryInOneList = sheet3.get('B10').first()
-    ChrhctrLimit1 = sheet3.get('B14').first()
-    ChrhctrLimit = int(ChrhctrLimit1)
-    sheet1.sort((6, 'des'),range='A1:K999')
-    values_list1 = sheet1.col_values(3)
-    values_list2 = sheet1.col_values(4)
-    values_list3 = sheet1.col_values(5)
-    if f"{lisType}" == "clskUlist":
-      CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList)
-    elif f"{lisType}" == "clskNlist":
-      createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
-    elif f"{lisType}" == "Stndrdlist":
-      createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
-    elif f"{lisType}" == "Buttonlist":
-      createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
-    else:
-      bot.send_message(chat_id = call.message.chat.id,text="List Type is Not Definded")
+    try:
+      listmakerid = call.message.chat.id
+      ListChnl = Config.ListChannel
+      lisType = sheet3.get('B1').first()
+      EntryInOneList = sheet3.get('B10').first()
+      ChrhctrLimit1 = sheet3.get('B14').first()
+      ChrhctrLimit = int(ChrhctrLimit1)
+      sheet1.sort((6, 'des'),range='A1:K999')
+      values_list1 = sheet1.col_values(3)
+      values_list2 = sheet1.col_values(4)
+      values_list3 = sheet1.col_values(5)
+      if f"{lisType}" == "clskUlist":
+        CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList)
+      elif f"{lisType}" == "clskNlist":
+        createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+      elif f"{lisType}" == "Stndrdlist":
+        createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+      elif f"{lisType}" == "Buttonlist":
+        createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+      else:
+        bot.send_message(chat_id = call.message.chat.id,text="List Type is Not Definded")
+    except Exception as e:
+      bot.send_message(chat_id = call.message.chat.id,e)
   if call.data=="setblwbtns":
     fxdbtn = sheet3.get('B3').first()
     if f"{fxdbtn}" == "No":
