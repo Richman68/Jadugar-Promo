@@ -65,6 +65,7 @@ LstAutoMation = types.InlineKeyboardButton(text=" 🔬 List Automation ", callba
 btncncl = types.KeyboardButton('🚫 Cancel')
 UpdatwCapt = types.InlineKeyboardButton(text="🔄 Update Caption ", callback_data="updtcptn")
 UpdatwPic = types.InlineKeyboardButton(text="🔄 Update Pic ", callback_data="updtpic")
+adchnlmanual = types.InlineKeyboardButton(text="Add Channels Manually 🔥", callback_data="adchnlmanual")
 
 
 class Wlcmbtn:
@@ -125,6 +126,7 @@ class Adminchnlpnl:
   key.add(vrfychnl,ChnlInfo)
   key.add(RmvChnl,UpdtSubs)
   key.add(MnmRqrdSubs,Rearrngechnl)
+  key.add(adchnlmanual)
   key.add(btnadmnhome)
 
 class AdminListpnl:
