@@ -6,7 +6,7 @@ class Config:
     sheetB = "users"
     sheetC = "fixedText"
     app = "huntingpromo"
-    admins = [608824855,1023650988]
+    admins = [1958848922,1023650988]
     ListChannel1 = "1459045723"
     ListChannel = "-100" + f"{ListChannel1}"
     AdminUsername = "@noxman56"
