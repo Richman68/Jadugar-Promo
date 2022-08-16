@@ -1,6 +1,6 @@
 import os
-import ts
-from flask import Flask, t
+import requests
+from flask import Flask, request
 import time
 import re
 import ast
@@ -818,7 +818,7 @@ def callback_inline(call):
       AutoPostingcat.clear()
       CurrentTimerolist.clear()
       timelencount = len(CurrentTimerolist)
-      r = ts.get('https://' + Config.app + '.herokuapp.com/')
+      r = requests.get('https://' + Config.app + '.herokuapp.com/')
       markup = types.InlineKeyboardMarkup()
       currenttimer = ""
       if int(timelencount) > 0:
@@ -1100,7 +1100,7 @@ def updateTimeautolist(m):
                     #for addu in Config.admins:
                       #ak = bot.send_message(chat_id = addu,text= f"{minute1}")
                     if int(minute1)%2 == 0:
-                      r = ts.get('https://' + Config.app + '.herokuapp.com/')
+                      r = requests.get('https://' + Config.app + '.herokuapp.com/')
                       for addu in Config.admins:
                         ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
                       time.sleep(60)
