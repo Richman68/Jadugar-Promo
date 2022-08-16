@@ -1,6 +1,6 @@
 import os
-import requests
-from flask import Flask, request
+import ts
+from flask import Flask, t
 import time
 import re
 import ast
@@ -818,7 +818,7 @@ def callback_inline(call):
       AutoPostingcat.clear()
       CurrentTimerolist.clear()
       timelencount = len(CurrentTimerolist)
-      r = requests.get('https://' + Config.app + '.herokuapp.com/')
+      r = ts.get('https://' + Config.app + '.herokuapp.com/')
       markup = types.InlineKeyboardMarkup()
       currenttimer = ""
       if int(timelencount) > 0:
@@ -1099,8 +1099,8 @@ def updateTimeautolist(m):
                     #print(minute1)
                     #for addu in Config.admins:
                       #ak = bot.send_message(chat_id = addu,text= f"{minute1}")
-                    if int(minute1)%20 == 0:
-                      r = requests.get('https://' + Config.app + '.herokuapp.com/')
+                    if int(minute1)%2 == 0:
+                      r = ts.get('https://' + Config.app + '.herokuapp.com/')
                       for addu in Config.admins:
                         ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
                       time.sleep(60)
@@ -2315,7 +2315,7 @@ def addlink(m):
 
 @server.route('/' + TOKEN, methods=['POST'])
 def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    bot.process_new_updates([telebot.types.Update.de_json(t.stream.read().decode("utf-8"))])
     return "!", 200
  
 @server.route("/")
