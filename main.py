@@ -855,7 +855,11 @@ def AddChannelManually(m):
         Chat_Id = chatinfo.id
         Title = chatinfo.title
         UserName = chatinfo.username
-        Invite_Link = chatinfo.invite_link
+        Invite_Link = ""
+        try:
+          Invite_Link+= chatinfo.invite_link
+        except:
+          Invite_Link+="None"
         ak = client.open(Config.sheetname)
         try:
           sheetxx = ak.worksheet(f"{Chat_IdAdmin}")
