@@ -49,7 +49,7 @@ cancellist = ["🚫 Cancel","/start"]
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
   '3:21:00','7:21:00',
-  '11:21:00 ',' 16:40:00',
+  '11:21:00 ',' 16:52:00',
   '19:21:00 ','23:21:00'
   #'15:53:00'
   #'01:25:00','04:27:45',
@@ -60,7 +60,7 @@ CurrentTimerolist = [
 
 cat3TimeMinlist = [
   '3:21','7:21',
-  '11:21','16:40',
+  '11:21','16:52',
   '19:21','23:21'
   ]
 
@@ -970,7 +970,7 @@ def runAutoList():
             else:
               bot.send_message(chat_id = adminid,text="List Type is Not Definded")
             time.sleep(15)
-            hnlidforautopstng = sheet1.col_values(2)
+            chnlidforautopstng = sheet1.col_values(2)
             listmsgidautopstg = sheet1.col_values(8)
             statsautopstng = sheet1.col_values(10)
             ap = bot.send_message(adminid,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
