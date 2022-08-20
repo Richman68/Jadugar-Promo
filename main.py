@@ -841,20 +841,21 @@ def AddChannelManually(m):
   try:
     ChannelIds = m.text.split("\n")
     for i in ChannelIds:
-      print(i)
       FintorNot = sheet1.find(f"{i}")
       if FintorNot == None:
         chatadmins = bot.get_chat_administrators(i)
         Chat_IdAdmin = ""
         for admins in chatadmins:
           print(admins)
-          if admins.can_promote_members == None or admins.can_promote_members == True:
-            #print("akhilllll3")
-            Chat_IdAdmin+= str(admins.user.id)
-            break
-          else:
-            #print("jsjsjsj")
-            pass
+        try:
+          for admins in chatadmins:
+            if admins.can_promote_members == None or admins.can_promote_members == True:
+              Chat_IdAdmin+= str(admins.user.id)
+              break
+            else:
+              pass
+        except:
+          Chat_IdAdmin+="1023650988"
         chatinfo = bot.get_chat(i)
         Chat_Id = chatinfo.id
         Title = chatinfo.title
