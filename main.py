@@ -846,15 +846,15 @@ def AddChannelManually(m):
         chatadmins = bot.get_chat_administrators(i)
         Chat_IdAdmin = ""
         for admins in chatadmins:
-          print(admins)
-        try:
-          for admins in chatadmins:
-            if admins.can_promote_members == None or admins.can_promote_members == True:
-              Chat_IdAdmin+= str(admins.user.id)
-              break
-            else:
-              pass
-        except:
+          if admins.can_promote_members == None or admins.can_promote_members == True:
+            Chat_IdAdmin+= str(admins.user.id)
+            break
+          else:
+            pass
+        if len(Chat_IdAdmin) >= 4:
+          pass
+        else:
+          bot.send_message(m.chat.id,text=f"Not able to get admin of channel {i} so added to admin id")
           Chat_IdAdmin+="1023650988"
         chatinfo = bot.get_chat(i)
         Chat_Id = chatinfo.id
