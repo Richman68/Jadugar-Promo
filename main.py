@@ -842,6 +842,7 @@ def AddChannelManually(m):
     ChannelIds = m.text.split("\n")
     for i in ChannelIds:
       FintorNot = sheet1.find(f"{i}")
+      print("akhilllll")
       if FintorNot == None:
         chatadmins = bot.get_chat_administrators(i)
         Chat_IdAdmin = ""
