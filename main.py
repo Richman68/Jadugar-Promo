@@ -841,6 +841,7 @@ def AddChannelManually(m):
   try:
     ChannelIds = m.text.split("\n")
     for i in ChannelIds:
+      print(i)
       FintorNot = sheet1.find(f"{i}")
       if FintorNot == None:
         print("akhilllll")
