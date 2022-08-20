@@ -48,7 +48,7 @@ cancellist = ["🚫 Cancel","/start"]
 #['01:25:00', '04:27:45', '08:30:00', '11:22:00', '13:35:00', '17:25:00', '21:25:00', '23:11:00']
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
-  '15:33:00'
+  '15:37:00'
   #'01:25:00','04:27:45',
   #'08:30:00','11:22:00',
   #'13:35:00','17:25:00',
@@ -919,17 +919,21 @@ def AddChannelManually(m):
 
 def runAutoList():
   while True:
+    print("1")
     adminId = 1023650988
     try:
+      print("2")
       if len(AutoPostingcat) == 1:
         if f"{AutoPostingcat[0]}" == "cat3":
           ist1 = pytz.timezone('Asia/Calcutta')
+          print("3")
           CurrentTime=datetime.now(ist1)
           timesathappen = CurrentTime.strftime('%H:%M')
           if timesathappen in cat3TimeMinlist:
             time.sleep(15)
             chnlidforautodltng = sheet1.col_values(2)
             pstidforautodltng = sheet1.col_values(10)
+            print("4")
             Pass = len(Passed)
             Fail = len(Failed)
             vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
