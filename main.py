@@ -49,7 +49,7 @@ cancellist = ["🚫 Cancel","/start"]
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
   '3:21:00','7:21:00',
-  '11:21:00 ',' 15:21:00',
+  '11:21:00 ',' 16:21:00',
   '19:21:00 ','23:21:00'
   #'15:53:00'
   #'01:25:00','04:27:45',
@@ -60,7 +60,7 @@ CurrentTimerolist = [
 
 cat3TimeMinlist = [
   '3:21','7:21',
-  '11:21','15:21',
+  '11:21','16:21',
   '19:21','23:21'
   ]
 
@@ -973,18 +973,18 @@ def runAutoList():
             hnlidforautopstng = sheet1.col_values(2)
             listmsgidautopstg = sheet1.col_values(8)
             statsautopstng = sheet1.col_values(10)
-            #ap = bot.send_message(adminid,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
-            #for i1,i2,i3 in zip(chnlidforautopstng,listmsgidautopstg,statsautopstng):
-              #man_detail1 = i1.strip()
-              #man_detail2 = i2.strip()
-              #man_detail3 = i3.strip()
-              #forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
-            #FrwrdResultprint(adminid)
+            ap = bot.send_message(adminid,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
+            for i1,i2,i3 in zip(chnlidforautopstng,listmsgidautopstg,statsautopstng):
+              man_detail1 = i1.strip()
+              man_detail2 = i2.strip()
+              man_detail3 = i3.strip()
+              forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
+            FrwrdResultprint(adminid)
           else:
             ist1 = pytz.timezone('Asia/Calcutta')
             CurrentTime=datetime.now(ist1)
             minute1 = int(CurrentTime.strftime("%M"))
-            if int(minute1)%42 == 0:
+            if int(minute1)%20 == 0:
               r = requests.get('https://' + Config.app + '.herokuapp.com/')
               for addu in Config.admins:
                 ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
