@@ -855,6 +855,7 @@ def AddChannelManually(m):
             Chat_IdAdmin+= str(admins.user.id)
             #break
           else:
+            print("jsjsjsj")
             #pass
         chatinfo = bot.get_chat(i)
         print("akhilllll4")
