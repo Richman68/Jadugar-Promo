@@ -846,12 +846,11 @@ def AddChannelManually(m):
         print("akhilllll")
         chatadmins = bot.get_chat_administrators(i)
         print("akhilllll1")
-        
         Chat_IdAdmin = ""
         for admins in chatadmins:
           print("akhilllll2")
           if admins.can_promote_members == None or admins.can_promote_members == True:
-          print("akhilllll3")
+            print("akhilllll3")
             Chat_IdAdmin+= str(admins.user.id)
             break
           else:
