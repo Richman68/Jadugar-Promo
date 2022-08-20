@@ -1,7 +1,7 @@
 import os
 import requests
 from flask import Flask, request
-import time
+import time,threading
 import re
 import ast
 import random, string
@@ -44,8 +44,10 @@ ist1 = pytz.timezone('Asia/Calcutta')
 currentTimeIST = datetime.now(ist1)
 
 cancellist = ["🚫 Cancel","/start"]
-AutoPostingcat = []
-CurrentTimerolist = []
+
+#['01:25:00', '04:27:45', '08:30:00', '11:22:00', '13:35:00', '17:25:00', '21:25:00', '23:11:00']
+AutoPostingcat = ['cat3']
+CurrentTimerolist = ['01:25:00', '04:27:45', '08:30:00', '11:22:00', '13:35:00', '17:25:00', '21:25:00', '23:11:00']
 
 cat3TimeMinlist = []
 
@@ -909,6 +911,81 @@ def AddChannelManually(m):
   except Exception as e:
     bot.send_message(m.chat.id,e)
 
+def runAutoList():
+  while True:
+    if len(AutoPostingcat) == 1:
+      if f"{AutoPostingcat[0]}" == "cat3":
+        ist1 = pytz.timezone('Asia/Calcutta')
+        CurrentTime=datetime.now(ist1)
+        #timesathappen = CurrentTime.strftime('%H:%M:%S')
+        timesathappen = CurrentTime.strftime('%H:%M')
+        if timesathappen in cat3TimeMinlist:
+          time.sleep(15)
+          adminid = 1023650988
+          chnlidforautodltng = sheet1.col_values(2)
+          pstidforautodltng = sheet1.col_values(10)
+          Pass = len(Passed)
+          Fail = len(Failed)
+          vk = bot.send_message(adminid,text=normaltext.ListdeleteSucess.format(Pass,Fail),parse_mode="HTML")
+          for man_detail1,man_detail2 in zip(chnlidforautodltng,pstidforautodltng):
+            time.sleep(1)
+            dltpostprocess(adminid,vk,man_detail1,man_detail2)
+          DltResultprint(adminid)
+          time.sleep(15)
+          listmakerid = m.chat.id
+          ListChnl = Config.ListChannel
+          lisType = sheet3.get('B1').first()
+          EntryInOneList = sheet3.get('B10').first()
+          ChrhctrLimit1 = sheet3.get('B14').first()
+          ChrhctrLimit = int(ChrhctrLimit1)
+          sheet1.sort((6, 'des'),range='A1:K999')
+          values_list1 = sheet1.col_values(3)
+          values_list2 = sheet1.col_values(4)
+          values_list3 = sheet1.col_values(5)
+          if f"{lisType}" == "clskUlist":
+            CrtUnameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,ListChnl,EntryInOneList)
+          elif f"{lisType}" == "clskNlist":
+            createNameList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+          elif f"{lisType}" == "Stndrdlist":
+            createStndrdList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+          elif f"{lisType}" == "Buttonlist":
+            createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
+          else:
+            bot.send_message(chat_id = m.chat.id,text="List Type is Not Definded")
+          #listposting
+          time.sleep(15)
+          hnlidforautopstng = sheet1.col_values(2)
+          listmsgidautopstg = sheet1.col_values(8)
+          statsautopstng = sheet1.col_values(10)
+          ap = bot.send_message(adminid,text=normaltext.ListForwardSucess.format(Pass,Fail),parse_mode="HTML")
+          for i1,i2,i3 in zip(chnlidforautopstng,listmsgidautopstg,statsautopstng):
+            man_detail1 = i1.strip()
+            man_detail2 = i2.strip()
+            man_detail3 = i3.strip()
+            forwardstept(adminid,man_detail1,man_detail2,man_detail3,ap)
+          FrwrdResultprint(adminid)
+            #time.sleep(60)
+        else:
+          #while True:
+          ist1 = pytz.timezone('Asia/Calcutta')
+          CurrentTime=datetime.now(ist1)
+          minute1 = int(CurrentTime.strftime("%M"))
+          #print(minute1)
+          #for addu in Config.admins:
+          #ak = bot.send_message(chat_id = addu,text= f"{minute1}")
+          if int(minute1)%2 == 0:
+            r = requests.get('https://' + Config.app + '.herokuapp.com/')
+            for addu in Config.admins:
+              ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
+              time.sleep(60)
+          else:
+            time.sleep(40)
+            continue
+            #continue
+      else:
+        break
+    else:
+      break
 
 def updateTimeautolist(m):
   if f"{m.text}" in cancellist:
@@ -2335,4 +2412,5 @@ def webhook():
     return "!", 200
  
 if __name__ == "__main__":
-    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+  threading.Thread(target=runAutoList, name='run_server_time', daemon=True).start()
+  server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
