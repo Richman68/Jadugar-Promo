@@ -844,33 +844,33 @@ def AddChannelManually(m):
       print(i)
       FintorNot = sheet1.find(f"{i}")
       if FintorNot == None:
-        print("akhilllll")
         chatadmins = bot.get_chat_administrators(i)
-        print("akhilllll1")
         Chat_IdAdmin = ""
         for admins in chatadmins:
-          print("akhilllll2")
           print(admins)
           if admins.can_promote_members == None or admins.can_promote_members == True:
-            print("akhilllll3")
+            #print("akhilllll3")
             Chat_IdAdmin+= str(admins.user.id)
-            #break
+            break
           else:
-            print("jsjsjsj")
-            #pass
+            #print("jsjsjsj")
+            pass
         chatinfo = bot.get_chat(i)
-        print("akhilllll4")
         Chat_Id = chatinfo.id
-        print("akhilllll5")
         Title = chatinfo.title
-        print("akhilllll6")
         UserName = chatinfo.username
-        print("akhilllll7")
         Invite_Link = ""
         try:
           Invite_Link+= chatinfo.invite_link
         except:
           Invite_Link+="None"
+        Texttt = f'''Id = {Chat_Id}
+        Name = {Title}
+        UserName = {UserName}
+        Link = {Invite_Link}
+        Chat_IdAdmin = {Chat_IdAdmin}
+        '''
+        bot.send_message(m.chat.id,text=Texttt)
         ak = client.open(Config.sheetname)
         try:
           sheetxx = ak.worksheet(f"{Chat_IdAdmin}")
@@ -902,12 +902,6 @@ def AddChannelManually(m):
         sheet1.update_cell(int(j1),8 ,"0")
         sheet1.update_cell(int(j1),9 ,"Deleted")
         sheet1.update_cell(int(j1),10 ,"0")
-        Texttt = f'''Id = {Chat_Id}
-        Name = {Title}
-        UserName = {UserName}
-        Link = {Invite_Link}
-        Chat_IdAdmin = {Chat_IdAdmin}
-        '''
         bot.send_message(m.chat.id,f"Xhannel Added Successfully \n{Chat_Id}")
       else:
         bot.send_message(m.chat.id,f"Channel {i} already in DATABASE")
