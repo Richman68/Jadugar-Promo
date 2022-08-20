@@ -48,7 +48,7 @@ cancellist = ["🚫 Cancel","/start"]
 #['01:25:00', '04:27:45', '08:30:00', '11:22:00', '13:35:00', '17:25:00', '21:25:00', '23:11:00']
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
-  '15:48:00'
+  '15:53:00'
   #'01:25:00','04:27:45',
   #'08:30:00','11:22:00',
   #'13:35:00','17:25:00',
@@ -56,7 +56,7 @@ CurrentTimerolist = [
   ]
 
 cat3TimeMinlist = [
-  '15:48'
+  '15:53'
   ]
 
 Passed = []
@@ -922,7 +922,7 @@ def AddChannelManually(m):
 def runAutoList():
   while True:
     print("1")
-    adminId = 1023650988
+    adminid = 1023650988
     try:
       print("2")
       if len(AutoPostingcat) == 1:
@@ -944,7 +944,7 @@ def runAutoList():
               dltpostprocess(adminid,vk,man_detail1,man_detail2)
             DltResultprint(adminid)
             time.sleep(15)
-            listmakerid = m.chat.id
+            listmakerid = int(adminid)
             ListChnl = Config.ListChannel
             lisType = sheet3.get('B1').first()
             EntryInOneList = sheet3.get('B10').first()
@@ -963,7 +963,7 @@ def runAutoList():
             elif f"{lisType}" == "Buttonlist":
               createButtonList(values_list1,values_list2,values_list3,ChrhctrLimit,listmakerid,EntryInOneList,ListChnl)
             else:
-              bot.send_message(chat_id = m.chat.id,text="List Type is Not Definded")
+              bot.send_message(chat_id = adminid,text="List Type is Not Definded")
             time.sleep(15)
             hnlidforautopstng = sheet1.col_values(2)
             listmsgidautopstg = sheet1.col_values(8)
