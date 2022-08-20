@@ -977,7 +977,7 @@ def runAutoList():
             ist1 = pytz.timezone('Asia/Calcutta')
             CurrentTime=datetime.now(ist1)
             minute1 = int(CurrentTime.strftime("%M"))
-            if int(minute1)%2 == 0:
+            if int(minute1)%42 == 0:
               r = requests.get('https://' + Config.app + '.herokuapp.com/')
               for addu in Config.admins:
                 ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
