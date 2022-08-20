@@ -49,7 +49,7 @@ cancellist = ["🚫 Cancel","/start"]
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
   '3:21:00','7:21:00',
-  '11:21:00 ',' 16:21:00',
+  '11:21:00 ',' 16:25:00',
   '19:21:00 ','23:21:00'
   #'15:53:00'
   #'01:25:00','04:27:45',
@@ -60,7 +60,7 @@ CurrentTimerolist = [
 
 cat3TimeMinlist = [
   '3:21','7:21',
-  '11:21','16:21',
+  '11:21','16:25',
   '19:21','23:21'
   ]
 
@@ -984,7 +984,7 @@ def runAutoList():
             ist1 = pytz.timezone('Asia/Calcutta')
             CurrentTime=datetime.now(ist1)
             minute1 = int(CurrentTime.strftime("%M"))
-            if int(minute1)%20 == 0:
+            if int(minute1)%19 == 0:
               r = requests.get('https://' + Config.app + '.herokuapp.com/')
               for addu in Config.admins:
                 ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
