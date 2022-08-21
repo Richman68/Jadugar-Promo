@@ -48,9 +48,9 @@ cancellist = ["🚫 Cancel","/start"]
 #['01:25:00', '04:27:45', '08:30:00', '11:22:00', '13:35:00', '17:25:00', '21:25:00', '23:11:00']
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
-  '3:21:00','7:21:00',
-  '11:21:00 ',' 16:52:00',
-  '19:21:00 ','23:21:00'
+  '3:23:00','8:23:00',
+  '11:23:00 ',' 15:23:00',
+  '19:23:00 ','23:23:00'
   #'15:53:00'
   #'01:25:00','04:27:45',
   #'08:30:00','11:22:00',
@@ -997,7 +997,7 @@ def runAutoList():
       else:
         break
     except Exception as e:
-      bot.send_message(m.chat.id,text=e)
+      bot.send_message(adminid,text=e)
       time.sleep(40)
 
 def updateTimeautolist(m):
