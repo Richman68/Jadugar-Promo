@@ -2421,9 +2421,9 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://' + Config.app + '.herokuapp.com/' + f"{TOKEN}")
+    bot.set_webhook(url='https://superfast-promo.onrender.com/' + f"{TOKEN}")
     return "!", 200
  
 if __name__ == "__main__":
   threading.Thread(target=runAutoList, name='run_server_time', daemon=True).start()
-  server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+  server.run(debug=True,host="0.0.0.0", port=int(os.environ.get('PORT', 1000)))
