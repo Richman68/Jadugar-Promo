@@ -59,9 +59,9 @@ CurrentTimerolist = [
   ]
 
 cat3TimeMinlist = [
-  '3:21','7:21',
-  '11:21','16:52',
-  '19:21','23:21'
+  '12:03','16:03',
+  '20:03','24:03',
+  '04:03','08:03'
   ]
 
 Passed = []
@@ -2425,5 +2425,5 @@ def webhook():
     return "!", 200
  
 if __name__ == "__main__":
-  #threading.Thread(target=runAutoList, name='run_server_time', daemon=True).start()
-  server.run(debug=True,host="0.0.0.0", port=int(os.environ.get('PORT', 1000)))
+  threading.Thread(target=runAutoList, name='run_server_time', daemon=True).start()
+  server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 1000)))
