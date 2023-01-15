@@ -2421,7 +2421,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://superfast-promo.onrender.com/' + f"{TOKEN}")
+    bot.set_webhook(url='https://superfast-promo-857i.onrender.com/' + f"{TOKEN}")
     return "!", 200
  
 if __name__ == "__main__":
