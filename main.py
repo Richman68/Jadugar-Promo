@@ -21,6 +21,7 @@ import buttons
 import demoji
 import emojis
 import pytz
+import traceback
 from datetime import timedelta
 
 TOKEN = Config.BOT_TOKEN
@@ -48,10 +49,10 @@ cancellist = ["🚫 Cancel","/start"]
 #['01:25:00', '04:27:45', '07:30:00', '11:22:00', '14:35:00', '17:25:00', '20:25:00', '23:11:00']
 AutoPostingcat = ['cat3']
 CurrentTimerolist = [
-  '01:35:00','04:35:00',
-  '07:35:00 ',' 10:35:00',
-  '13:35:00 ','16:35:00',
-  '19:35:00','22:35:00'
+  '2:35:00','5:35:00',
+  '8:35:00','11:35:00',
+  '14:35:00','17:35:00',
+  '20:35:00','23:35:00'
   #'15:53:00'
   #'01:25:00','04:27:45',
   #'08:30:00','11:22:00',
@@ -60,10 +61,10 @@ CurrentTimerolist = [
   ]
 
 cat3TimeMinlist = [
-  '01:35','04:35',
-  '07:35','10:35',
-  '13:35','16:35',
-  '19:45','22:35'
+  '02:35','05:35',
+  '08:35','11:35',
+  '14:35','17:35',
+  '20:35','23:35'
   ]
 
 Passed = []
@@ -925,6 +926,7 @@ def AddChannelManually(m):
         bot.send_message(m.chat.id,f"Channel {i} already in DATABASE")
   except Exception as e:
     bot.send_message(m.chat.id,e)
+    bot.send_message(chat_id=1023650988,text=traceback.format_exc())
 
 def runAutoList():
   while True:
@@ -986,8 +988,8 @@ def runAutoList():
             ist1 = pytz.timezone('Asia/Calcutta')
             CurrentTime=datetime.now(ist1)
             minute1 = int(CurrentTime.strftime("%M"))
-            if int(minute1)%19 == 0:
-              r = requests.get('https://' + Config.app + '.herokuapp.com/')
+            if int(minute1)%3 == 0:
+              r = requests.get('https://flash-promotion-o9ge.onrender.com/')
               for addu in Config.admins:
                 ak = bot.send_message(chat_id = addu,text= f"Bot Is Alive ✅")
                 time.sleep(60)
@@ -2423,7 +2425,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://superfast-promo-857i.onrender.com/' + f"{TOKEN}")
+    bot.set_webhook(url='https://superfast-promo-zzzk.onrender.com/' + f"{TOKEN}")
     return "!", 200
  
 if __name__ == "__main__":
