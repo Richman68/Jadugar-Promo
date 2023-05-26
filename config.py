@@ -11,5 +11,5 @@ class Config:
     ListChannel = "-100" + f"{ListChannel1}"
     AdminUsername = "@noxman56"
     botUsername = "@HQpromotion_bot"
-    sponcergroup = "-100" + "949500116"
+    sponcergroup = "-100" + "1840869538"
     EmojiText="👻😻🦊🐅🐱🦁🐈🐆🦁🍎🥝🍏🍒🍑🍐🍓🍌🍑🥕🍏🌽🥑🥚🍟🥙🍕🌯🥖"
