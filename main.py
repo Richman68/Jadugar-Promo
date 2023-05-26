@@ -2354,6 +2354,7 @@ def channeladd1(m):
               #subcount= bot.get_chat_members_count(chat_id=chnldid)
               bot.send_message(chat_id=Config.sponcergroup,text=normaltext.chnlsccnotifytogroup.format(chnlname,chnlid,chnlusrnm,subcount,invitelnk,usrlnk),disable_web_page_preview=True,parse_mode="HTML")
             except Exception as e:
+              bot.send_message(m.chat.id,text=e)
               print(e)
               m = bot.send_message(m.chat.id,text = "<b>Send private link of your channel</b>",reply_markup=buttons.CancelKey.keyboard,parse_mode="HTML")
               bot.register_next_step_handler(m,addlink)
