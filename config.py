@@ -7,9 +7,9 @@ class Config:
     sheetC = "fixedText"
     app = "HQ-Promo"
     admins = [5454116424,1023650988]
-    ListChannel1 = "1720252697"
+    ListChannel1 = "1969216511"
     ListChannel = "-100" + f"{ListChannel1}"
     AdminUsername = "@noxman56"
-    botUsername = "@HQpromotion_bot"
-    sponcergroup = "-100" + "1840869538"
+    botUsername = "@Jadugarpromo_bot"
+    sponcergroup = "-100" + "941143038"
     EmojiText="👻😻🦊🐅🐱🦁🐈🐆🦁🍎🥝🍏🍒🍑🍐🍓🍌🍑🥕🍏🌽🥑🥚🍟🥙🍕🌯🥖"
