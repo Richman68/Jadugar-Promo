@@ -7,7 +7,7 @@ class Config:
     sheetC = "fixedText"
     app = "HQ-Promo"
     admins = [5454116424,1023650988]
-    ListChannel1 = "1969216511"
+    ListChannel1 = "1962655417"
     ListChannel = "-100" + f"{ListChannel1}"
     AdminUsername = "@noxman56"
     botUsername = "@Jadugarpromo_bot"
