@@ -2426,7 +2426,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://jadugar-promo2784.onrender.com/' + f"{TOKEN}")
+    bot.set_webhook(url='https://jadugar-promo53772.onrender.com/' + f"{TOKEN}")
     return "!", 200
  
 if __name__ == "__main__":
