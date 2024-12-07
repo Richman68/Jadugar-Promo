@@ -1,7 +1,7 @@
 import os
 class Config:
     BOT_TOKEN = "6653606927:AAFXUpd3w3w6KrW11pm9Q-2P2vX3x04t8gA"
-    sheetname = "Jadugar12"
+    sheetname = "Jadugar@paisa"
     sheetA = "channels"
     sheetB = "users"
     sheetC = "fixedText"
